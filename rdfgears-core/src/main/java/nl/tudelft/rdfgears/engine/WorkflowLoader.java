@@ -481,43 +481,27 @@ public class WorkflowLoader {
 	 * @throws WorkflowLoadingException
 	 */
 	public void loadWorkflowXMLDocument() throws WorkflowLoadingException {
-		ArrayList<String> checkedPaths = new ArrayList<String>();
-		for (String path : Engine.getConfig().getWorkflowPathList()) {
-			String filePath = path + "/" + workflowId + ".xml";
-			try {
-				usedXMLFile = filePath; // well, used... at least we TRY to use
-										// it
+		String path = Engine.getConfig().getWorkflowPath();
+		String filePath = path + "/" + workflowId + ".xml";
+		try {
 
-				FileReader fileReader = new FileReader(filePath);
-				InputSource input = new InputSource(fileReader);
-				DOMParser parser = new DOMParser();
-				parser.parse(input);
-				xmlDoc = parser.getDocument();
-			} catch (FileNotFoundException e) {
-				checkedPaths.add(filePath);
-			} catch (SAXException e) {
-				throw new WorkflowLoadingException("Cannot parse XML file '"
-						+ usedXMLFile + "': " + e.getMessage());
-				// e.printStackTrace();
-				// System.exit(0);
-			} catch (IOException e) {
-				throw new WorkflowLoadingException("Cannot load XML file '"
-						+ usedXMLFile + "': " + e.getMessage());
-			}
-
-			if (xmlDoc != null) {
-				return;
-			}
-		}
-
-		if (xmlDoc == null) {
-			String msg = "Workflow XML file for '" + workflowId
-					+ "' not found: \n";
-
-			for (String path : checkedPaths) {
-				msg += "\tno file '" + path + "'\n";
-			}
-			throw new WorkflowLoadingException(msg);
+			FileReader fileReader = new FileReader(filePath);
+			InputSource input = new InputSource(fileReader);
+			DOMParser parser = new DOMParser();
+			parser.parse(input);
+			xmlDoc = parser.getDocument();
+			usedXMLFile = filePath; // well, used... at least we TRY to use it
+		} catch (FileNotFoundException e) {
+			throw new WorkflowLoadingException("Workflow XML file for '"
+					+ workflowId + "' not found in " + filePath);
+		} catch (SAXException e) {
+			throw new WorkflowLoadingException("Cannot parse XML file '"
+					+ usedXMLFile + "': " + e.getMessage());
+			// e.printStackTrace();
+			// System.exit(0);
+		} catch (IOException e) {
+			throw new WorkflowLoadingException("Cannot load XML file '"
+					+ usedXMLFile + "': " + e.getMessage());
 		}
 
 	}

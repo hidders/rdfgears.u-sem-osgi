@@ -26,12 +26,12 @@ package nl.tudelft.wis.usem.plugin.repository.localrepository;
  * #L%
  */
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.Properties;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -40,13 +40,25 @@ import nl.tudelft.wis.usem.plugin.repository.PluginRepository;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 
 public class LocalPluginRepository implements PluginRepository {
-	
-	private static final String REPOSITORY_FOLDER = "../temp/pluginRepository";
+
+	public static final String DEFAULT_CONFIG_FILE = "../rdfgears.config";
+	private static String repositoryDir;
+	private Properties configMap = new Properties();
 
 	@Override
 	public String listRepositoryContents(Map<String, Object> properties) {
 
-		File repoFolder = new File(REPOSITORY_FOLDER);
+		try {
+			configMap.load(getStream(DEFAULT_CONFIG_FILE));
+		} catch (Exception e) {
+			
+			System.out.println("Config file " + DEFAULT_CONFIG_FILE + " not found");
+			return null;
+		}
+
+		repositoryDir = configMap.getProperty("repository.dir");
+		
+		File repoFolder = new File(repositoryDir);
 
 		System.out.println(repoFolder.getAbsolutePath());
 
@@ -59,6 +71,24 @@ public class LocalPluginRepository implements PluginRepository {
 		browseFolder(repoFolder, repoFolder, arr);
 
 		return arr.toString();
+	}
+
+	/**
+	 * Get a stream of the file, assuming it can be found next to the current
+	 * class location. Useful when dealing with JAR files, where the current
+	 * working directory has nothing to do with the place where the config is
+	 * stored.
+	 * 
+	 * @param fileName
+	 * @return
+	 */
+	private InputStream getStream(String fileName) {
+		InputStream resourceAsStream = this.getClass().getClassLoader()
+				.getResourceAsStream(fileName);
+
+		// no exception
+
+		return resourceAsStream;
 	}
 
 	private void browseFolder(File root, File folder, JSONArray arr) {
@@ -84,20 +114,24 @@ public class LocalPluginRepository implements PluginRepository {
 	}
 
 	@Override
-	public InputStream getPlugin(Map<String, Object> properties, String key) throws Exception {
-		File plugin = new File(LocalPluginRepository.REPOSITORY_FOLDER + key);
+	public InputStream getPlugin(Map<String, Object> properties, String key)
+			throws Exception {
+		File plugin = new File(LocalPluginRepository.repositoryDir + key);
 
 		return new FileInputStream(plugin);
 	}
-	
+
 	@Override
-	public String getPluginName(Map<String, Object> properties, String key) throws Exception {
-		return  new File(LocalPluginRepository.REPOSITORY_FOLDER + key).getName();
+	public String getPluginName(Map<String, Object> properties, String key)
+			throws Exception {
+		return new File(LocalPluginRepository.repositoryDir + key)
+				.getName();
 	}
-	
-	public boolean publishlPlugin(String folder, String pluginName, InputStream plugin) {
+
+	public boolean publishlPlugin(String folder, String pluginName,
+			InputStream plugin) {
 		try {
-			File publishFolder = new File(REPOSITORY_FOLDER + File.separator
+			File publishFolder = new File(repositoryDir + File.separator
 					+ folder.trim());
 
 			if (!publishFolder.exists()) {

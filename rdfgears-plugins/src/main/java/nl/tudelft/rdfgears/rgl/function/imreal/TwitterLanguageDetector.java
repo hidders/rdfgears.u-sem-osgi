@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import nl.tudelft.rdfgears.engine.Config;
+import nl.tudelft.rdfgears.engine.Engine;
 import nl.tudelft.rdfgears.engine.ValueFactory;
 import nl.tudelft.rdfgears.rgl.datamodel.type.GraphType;
 import nl.tudelft.rdfgears.rgl.datamodel.type.RDFType;
@@ -55,8 +56,9 @@ public class TwitterLanguageDetector extends SimplyTypedRGLFunction {
 
 	public static final String INPUT_USERNAME = "username";
 	public static final String INPUT_UUID = "uuid";
+	public static final String INPUT_USEFRIENDSOFUSER = "friendsOfUser";
 	
-	public static final int MAXHOURS = 2*24; /* number of hours 'old' data (i.e. tweets retrieved earlier on) are still considered a valid substitute */
+	public static final int MAXHOURS = 48; /* number of hours 'old' data (i.e. tweets retrieved earlier on) are still considered a valid substitute */
 
 	/*
 	 * profiles can only be loaded once, otherwise the language library crashes.
@@ -67,6 +69,7 @@ public class TwitterLanguageDetector extends SimplyTypedRGLFunction {
 	public TwitterLanguageDetector() {
 		this.requireInputType(INPUT_USERNAME, RDFType.getInstance());
 		this.requireInputType(INPUT_UUID, RDFType.getInstance());
+		this.requireInputType(INPUT_USEFRIENDSOFUSER, RDFType.getInstance());
 	}
 
 	public RGLType getOutputType() {
@@ -86,7 +89,7 @@ public class TwitterLanguageDetector extends SimplyTypedRGLFunction {
 					+ getFullName());
 
 		// we are happy, value can be safely cast with .asLiteral().
-		String username = rdfValue.asLiteral().getValueString();
+		String username = rdfValue.asLiteral().getValueString().trim();
 
 		RGLValue rdfValue2 = inputRow.get(INPUT_UUID);
 		if (!rdfValue2.isLiteral())
@@ -94,17 +97,34 @@ public class TwitterLanguageDetector extends SimplyTypedRGLFunction {
 					+ getFullName());
 		String uuid = rdfValue2.asLiteral().getValueString();
 		
-		HashMap<String, Double> languageMap;
-		try 
-		{
-			languageMap = detectLanguage(username);
-		} catch (Exception e) 
-		{
-			return ValueFactory.createNull("Error in "
-					+ this.getClass().getCanonicalName() + ": "
-					+ e.getMessage());
+		RGLValue rdfValue3 = inputRow.get(INPUT_USEFRIENDSOFUSER);
+		if (!rdfValue3.isLiteral())
+			return ValueFactory.createNull("Cannot handle URI input in "
+					+ getFullName());
+		String useFriends = rdfValue3.asLiteral().getValueString();		
+		
+		String usernameSplit[] = username.split("\\s+");
+		
+		HashMap<String, Double> languageMap = new HashMap<String,Double>();
+		for(String un : usernameSplit) {
+			try 
+			{
+				HashMap<String,Double> map = detectLanguage(un, useFriends);
+				for(String s : map.keySet()) {
+					double d = map.get(s);
+					if(languageMap.containsKey(s)) {
+						d += languageMap.get(s);
+					}
+					languageMap.put(s, d);
+				}
+			} catch (Exception e) 
+			{
+				return ValueFactory.createNull("Error in "
+						+ this.getClass().getCanonicalName() + ": "
+						+ e.getMessage());
+			}
 		}
-
+		
 		/*
 		 * We must now convert the languageMap, that was the result of the
 		 * external 'component', to an RGL value.
@@ -133,22 +153,23 @@ public class TwitterLanguageDetector extends SimplyTypedRGLFunction {
 	 * @throws LangDetectException
 	 * @throws IOException
 	 */
-	protected HashMap<String, Double> detectLanguage(String twitterUser)
+	protected HashMap<String, Double> detectLanguage(String twitterUser, String useFriends)
 			throws LangDetectException, IOException {
 		
-		HashMap<String,String> tweets = TweetCollector.getTweetTextWithDateAsKey(twitterUser, true, MAXHOURS);
+		HashMap<String,String> tweets = null;
+		
+		if(useFriends.equals("true"))
+			tweets = TweetCollector.getFriendsTweetTextWithDateAsKey(twitterUser,25,true, MAXHOURS);
+		else
+			tweets = TweetCollector.getTweetTextWithDateAsKey(twitterUser, true, MAXHOURS);
 
 		/* *************
-		 * The dir with the language profiles is assumed to be stored in the
-		 * tmpdir. As it is read-only, it may be nicer to package it in the jar
-		 * instead.... But the jar directory contents are not easily listed by
-		 * the langdetect tool.
+		 * The dir with the language profiles is read from the conf file.
 		 */
-		File profileDir = new File(Config.getWritableDir()
-				+ "/imreal-language-profiles"); /*
-												 * should be cross-platform and
-												 * work in webapps
-												 */
+		File profileDir = new File(Config.getLanguageProfilePath());
+	
+		System.err.println("TwitterLanguageDetector: profiles read from "+profileDir);
+												 
 		if (!profilesLoaded) {
 			DetectorFactory.loadProfile(profileDir);
 			profilesLoaded = true;
@@ -163,8 +184,14 @@ public class TwitterLanguageDetector extends SimplyTypedRGLFunction {
 			// language of the tweet
 			Detector detect = DetectorFactory.create();
 			detect.append(tweetText);
-			String lang = detect.detect();
-			if (languageMap.containsKey(lang) == true) 
+			String lang = null;
+			try
+			{
+				lang = detect.detect();
+			}
+			catch(Exception e){System.err.println(e.getMessage());}
+			
+			if (lang!=null && languageMap.containsKey(lang) == true) 
 			{
 				double val = languageMap.get(lang) + 1;
 				languageMap.put(lang, val);
@@ -172,6 +199,12 @@ public class TwitterLanguageDetector extends SimplyTypedRGLFunction {
 			else
 				languageMap.put(lang, 1.0);
 		}
+		
+		System.err.println("number of detected languages: "+languageMap.size());
+		for(String s : languageMap.keySet()) {
+			System.err.println("language detection: "+s+" => "+languageMap.get(s));
+		}
+		
 		return languageMap;
 	}
 

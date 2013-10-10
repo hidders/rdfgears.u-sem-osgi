@@ -32,39 +32,21 @@ import java.io.File;
 import nl.tudelft.rdfgears.engine.Config;
 
 import java.io.*;
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-import nl.tudelft.rdfgears.engine.Config;
 import nl.tudelft.rdfgears.engine.Engine;
-import nl.tudelft.rdfgears.engine.ValueFactory;
-import nl.tudelft.rdfgears.rgl.datamodel.type.BagType;
-import nl.tudelft.rdfgears.rgl.datamodel.type.RDFType;
-import nl.tudelft.rdfgears.rgl.datamodel.type.RGLType;
-import nl.tudelft.rdfgears.rgl.datamodel.value.RGLValue;
-import nl.tudelft.rdfgears.rgl.function.SimplyTypedRGLFunction;
-import nl.tudelft.rdfgears.rgl.function.imreal.vocabulary.USEM;
-import nl.tudelft.rdfgears.rgl.function.imreal.vocabulary.WI;
-import nl.tudelft.rdfgears.rgl.function.imreal.vocabulary.WO;
-import nl.tudelft.rdfgears.util.row.ValueRow;
 
-import com.cybozu.labs.langdetect.Detector;
-import com.cybozu.labs.langdetect.DetectorFactory;
-import com.cybozu.labs.langdetect.LangDetectException;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
-import com.hp.hpl.jena.sparql.vocabulary.FOAF;
-import com.hp.hpl.jena.vocabulary.RDF;
+import twitter4j.IDs;
+import twitter4j.Paging;
+import twitter4j.ResponseList;
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterFactory;
+import twitter4j.conf.ConfigurationBuilder;
 
-import org.w3c.dom.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -74,7 +56,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
  * 
  * if includeRetweets==true, retweets are included, otherwise they are ignored
  * 
- * maxHoursAllowedOld indicates how old in hours the stored data is allowed to be before it is overwritten.
+ * maxHoursAllowedOld indicates how old in hours the stored data is allowed to
+ * be before it is overwritten.
  * 
  * @author Claudia
  * 
@@ -82,145 +65,204 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public class TweetCollector 
 {
 	
-	private static final String TWITTER_DATA_FOLDER = Config.getWritableDir()+"twitterData";
+	private static final String TWITTER_DATA_FOLDER = Config.getTwitterPath();
 	private static DocumentBuilder docBuilder;
+	private static Twitter twitter4j;
+
 	
 	static
 	{
 		try
 		{
 			docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		}
-		catch(Exception e)
-		{
+			ConfigurationBuilder cb = new ConfigurationBuilder();
+
+			cb.setDebugEnabled(true)
+			  .setOAuthConsumerKey(Config.getOAuthConsumerKey())
+			  .setOAuthConsumerSecret(Config.getOAuthConsumerSecret())
+			  .setOAuthAccessToken(Config.getOAuthAccessToken())
+			  .setOAuthAccessTokenSecret(Config.getOAuthAccessTokenSecret());
+
+			TwitterFactory tf = new TwitterFactory(cb.build());
+			twitter4j = tf.getInstance();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public static HashMap<String,String> getTweetTextWithDateAsKey(String twitterUsername, boolean includeRetweets, int maxHoursAllowedOld)
-	{
-		try
-		{
+
+	public static HashMap<String, String> getTweetTextWithDateAsKey(
+			String twitterUsername, boolean includeRetweets,
+			int maxHoursAllowedOld) {
+		HashMap<String, String> tweetMap = new HashMap<String, String>();
+
+		try {
 			File twitterDataFolder = new File(TWITTER_DATA_FOLDER);
-			if(!twitterDataFolder.exists())
+			if (!twitterDataFolder.exists())
 				twitterDataFolder.mkdirs();
-			
-			File f = new File(TWITTER_DATA_FOLDER+"/"+twitterUsername);
+
+			File f = new File(TWITTER_DATA_FOLDER + "/" + twitterUsername);
 			int hours = -1;
-			if(f.exists()==true)
-			{
+			if (f.exists() == true) {
 				long lastModified = f.lastModified();
-				
-				long diff = System.currentTimeMillis()-lastModified;
-				
-				int seconds = (int)(diff/1000L);
-				int minutes = seconds/60;
-				hours = minutes/60;
-				
-				
-				//if the file is nearly empty, retrieve it again anyway
-				if(f.length()<100)
-				{
-					System.err.println("(Nearly) empty file found, retrieving again ....");
-					hours=-1;
+
+				long diff = System.currentTimeMillis() - lastModified;
+
+				int seconds = (int) (diff / 1000L);
+				int minutes = seconds / 60;
+				hours = minutes / 60;
+
+				// if the file is nearly empty, retrieve it again anyway
+				if (f.length() < 100) {
+					System.err
+							.println("(Nearly) empty file found, retrieving again ....");
+					hours = -1;
 				}
 			}
-			
+
 			/*
-			 * if we do not have data yet (or it is too old), retrieve it and store it in a folder
+			 * if we do not have data yet (or it is too old), retrieve it and
+			 * store it in a folder
 			 */
-			if(hours>maxHoursAllowedOld || hours<0)
-			{
-				String getTweetsURL = "https://api.twitter.com/1/statuses/user_timeline.xml?include_entities=false&include_rts=true&screen_name="+ twitterUsername + "&count=200";
-					
-				//TODO: only overwrite the original file if we actually manage to get hold of something from Twitter ..
-				BufferedWriter bw = new BufferedWriter(new FileWriter(f.toString()));
-				URL url = new URL(getTweetsURL);
-				Engine.getLogger().debug("In TweetCollector, retrieving live tweets for " + url.toString());
-				Engine.getLogger().debug("hours computed: "+hours+", maxHoursAllowedOld: "+maxHoursAllowedOld);
+			if (hours > maxHoursAllowedOld || hours < 0) {
+				Engine.getLogger().debug(
+						"In TweetCollector, retrieving live tweets, storing to "
+								+ f.toString());
+				ResponseList<Status> tweetList = twitter4j.getUserTimeline(
+						twitterUsername, new Paging(1, 200));
 
-				BufferedReader in = new BufferedReader(new InputStreamReader(
-						url.openStream()));
-
-				String inputLine;
-				while ((inputLine = in.readLine()) != null) 
-				{
-					bw.write(inputLine);
+				BufferedWriter bw = new BufferedWriter(new FileWriter(
+						f.toString()));
+				for (Status s : tweetList) {
+					if (tweetMap.size() < 5) {
+						Engine.getLogger().debug(
+								"status string: " + s.toString());
+					}
+					tweetMap.put(s.getCreatedAt().toString(), s.getText());
+					bw.write(s.getCreatedAt() + "\t" + s.getText());
 					bw.newLine();
 				}
-				in.close();
 				bw.close();
+			} else {
+				System.err
+						.println("In TweetCollector, reading tweets saved in "
+								+ f.toString());
+				BufferedReader br = new BufferedReader(new FileReader(
+						f.toString()));
+				String line;
+				while ((line = br.readLine()) != null) {
+					int delim = line.indexOf('\t');
+					if (delim > 0) {
+						tweetMap.put(line.substring(0, delim),
+								line.substring(delim + 1));
+					} else {
+						System.err
+								.println("In TweetCollector, no tab delimiter found in line: "
+										+ line);
+					}
+				}
 			}
-			
-			return getTweetTextWithDateAsKeyFromFile(f,includeRetweets);
-		}
-		catch(Exception e)
-		{
+			return tweetMap;
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new HashMap<String, String>();
-	}
-	
-	
-	private static String getTagValue(String tag, Element el) 
-	{
-	    NodeList list = el.getElementsByTagName(tag).item(0).getChildNodes();
-
-	    Node val = (Node) list.item(0);
-        return val.getNodeValue();
-	}
-
-	
-	/*
-	 * method returns up to the last 200 tweets, ignoring RTs
-	 * key: created_at
-	 * value: tweet text
-	 */
-	private static HashMap<String,String> getTweetTextWithDateAsKeyFromFile(File f, boolean includeRetweets)
-	{
-		HashMap<String, String> tweetMap = new HashMap<String, String>();
-		
-		try
-		{
-			Document d = docBuilder.parse(new FileInputStream(f));
-			NodeList statuses = d.getElementsByTagName("status");
-			
-			for(int i=0; i<statuses.getLength(); i++)
-			{
-				Node status = statuses.item(i);
-	            if (status.getNodeType() == Node.ELEMENT_NODE) 
-	            {
-	                Element el = (Element) status;
-	
-	                String creationDate = getTagValue("created_at",el);
-	                String text = getTagValue("text",el);
-	                
-	                //is it a retweet?
-	                NodeList retweetList = el.getElementsByTagName("retweeted_status");
-	                if(retweetList.getLength()>0)
-	                {
-	                	if(includeRetweets==false)
-	                		text="";
-	                	else
-	                	{
-	                		Node retweet = retweetList.item(0);
-	                		text = getTagValue("text",(Element)retweet);
-	                	}
-	                }
-
-	                if(text.equals("")==false)
-	                	tweetMap.put(creationDate,text);
-	            }
-			}
-			System.err.println("Number of status tweets: "+statuses.getLength());
-			System.err.println("Number of tweets serviced: "+tweetMap.size()+" (includeRetweets="+includeRetweets+")");
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		
 		return tweetMap;
-	}	
+	}
 
+	/*
+	 * retrieve the list of friends for the given user. randomly pick a number
+	 * of them and check their tweets.
+	 */
+	public static HashMap<String, String> getFriendsTweetTextWithDateAsKey(
+			String twitterUsername, int sampleFriends, boolean includeRetweets,
+			int maxHoursAllowedOld) {
+		
+		System.err.println("Retrieving tweets of friends of "+twitterUsername);
+		
+		HashMap<String, String> tweetMap = new HashMap<String, String>();
+
+		try {
+			File twitterDataFolder = new File(TWITTER_DATA_FOLDER);
+			if (!twitterDataFolder.exists())
+				twitterDataFolder.mkdirs();
+
+			File f = new File(TWITTER_DATA_FOLDER + "/FRIENDS_OF_"
+					+ twitterUsername);
+			int hours = -1;
+			
+			if (f.exists() == true) {
+				long lastModified = f.lastModified();
+
+				long diff = System.currentTimeMillis() - lastModified;
+
+				int seconds = (int) (diff / 1000L);
+				int minutes = seconds / 60;
+				hours = minutes / 60;
+
+				// if the file is nearly empty, retrieve it again anyway
+				if (f.length() < 100) {
+					System.err
+							.println("(Nearly) empty file found, retrieving again ....");
+					hours = -1;
+				}
+			}
+
+			/*
+			 * if we do not have data yet (or it is too old), retrieve it and
+			 * store it in a folder
+			 */
+			if (hours > maxHoursAllowedOld || hours < 0) {
+
+				BufferedWriter bw = new BufferedWriter(new FileWriter(
+						f.toString()));
+
+				// get the first 5000 friends
+				IDs friends = twitter4j.getFriendsIDs(twitterUsername, -1);
+				List<Long> friendIDs = new ArrayList<Long>();
+				System.err.println("Number of friends on first cursor page: "+friends.getIDs().length);
+				
+				for (int i = 0; i < friends.getIDs().length; i++) {
+					friendIDs.add(friends.getIDs()[i]);
+				}
+				// randomize the list
+				Collections.shuffle(friendIDs);
+
+				for (int i = 0; i < sampleFriends && i < friendIDs.size(); i++) {
+
+					System.err.println("Sampling from user "+friendIDs.get(i));
+					
+					ResponseList<Status> tweetList = twitter4j.getUserTimeline(
+							friendIDs.get(i), new Paging(1, 200));
+
+					for (Status s : tweetList) {
+						tweetMap.put(s.getCreatedAt().toString(), s.getText());
+						bw.write(s.getCreatedAt() + "\t" + s.getText());
+						bw.newLine();
+					}
+				}
+				bw.close();
+			} else {
+				System.err
+						.println("In TweetCollector, reading tweets saved in "
+								+ f.toString());
+				BufferedReader br = new BufferedReader(new FileReader(
+						f.toString()));
+				String line;
+				while ((line = br.readLine()) != null) {
+					int delim = line.indexOf('\t');
+					if (delim > 0) {
+						tweetMap.put(line.substring(0, delim),
+								line.substring(delim + 1));
+					} else {
+						System.err
+								.println("In TweetCollector, no tab delimiter found in line: "
+										+ line);
+					}
+				}
+			}
+			return tweetMap;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return tweetMap;
+	}
 }

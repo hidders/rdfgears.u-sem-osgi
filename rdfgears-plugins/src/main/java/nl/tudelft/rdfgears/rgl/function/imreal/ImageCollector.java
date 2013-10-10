@@ -30,40 +30,13 @@ import java.io.BufferedReader;
 import nl.tudelft.rdfgears.engine.Config;
 
 import org.w3c.dom.*;
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import java.io.*;
 import java.net.URL;
 import java.util.*;
 
-import nl.tudelft.rdfgears.engine.Config;
 import nl.tudelft.rdfgears.engine.Engine;
-import nl.tudelft.rdfgears.engine.ValueFactory;
-import nl.tudelft.rdfgears.rgl.datamodel.type.BagType;
-import nl.tudelft.rdfgears.rgl.datamodel.type.RDFType;
-import nl.tudelft.rdfgears.rgl.datamodel.type.RGLType;
-import nl.tudelft.rdfgears.rgl.datamodel.value.RGLValue;
-import nl.tudelft.rdfgears.rgl.function.SimplyTypedRGLFunction;
-import nl.tudelft.rdfgears.rgl.function.imreal.vocabulary.USEM;
-import nl.tudelft.rdfgears.rgl.function.imreal.vocabulary.WI;
-import nl.tudelft.rdfgears.rgl.function.imreal.vocabulary.WO;
-import nl.tudelft.rdfgears.util.row.ValueRow;
-
-import com.cybozu.labs.langdetect.Detector;
-import com.cybozu.labs.langdetect.DetectorFactory;
-import com.cybozu.labs.langdetect.LangDetectException;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
-import com.hp.hpl.jena.sparql.vocabulary.FOAF;
-import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
  * A class that either retrieves Flickr images from file or from the Flickr stream
@@ -77,10 +50,10 @@ import com.hp.hpl.jena.vocabulary.RDF;
 public class ImageCollector 
 {
 	
-	private static final String FLICKR_DATA_FOLDER = Config.getWritableDir()+"flickrData"; 
+	private static final String FLICKR_DATA_FOLDER = Config.getFlickrDataPath(); 
 	private static final int MAX_NUM_IMAGES = 2000;/* maximum number of images that should be retrieved */
-	private static String FLICKR_API_KEY;
-	private static final String FLICKR_API_KEY_FILE = Config.getWritableDir()+"flickr_api_key";
+	private static String FLICKR_API_KEY = Config.getFlickrApiKey();
+	//private static final String FLICKR_API_KEY_FILE = Config.getWritableDir()+"flickr_api_key";
 	
 	public static ArrayList<Photo> getPhotos(String flickrUsername, int maxHoursAllowedOld)
 	{
@@ -88,7 +61,6 @@ public class ImageCollector
 		
 		try
 		{
-			readFlickrKey();
 			String nsid = getNSID(flickrUsername);
 			
 			//if we have no NSID, just return an empty list of photos
@@ -142,25 +114,6 @@ public class ImageCollector
 	}
 	
 	
-	private static void readFlickrKey()
-	{
-		/* read the Flickr API key from file */
-		try
-		{
-			BufferedReader br = new BufferedReader(new FileReader(FLICKR_API_KEY_FILE));
-			String line;
-			while( (line=br.readLine())!=null)
-			{
-				FLICKR_API_KEY = line;
-				break;
-			}
-			br.close();
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
 	
 	/*
 	 * method checks if hte flickrUser is a NSID or a user name;
@@ -193,9 +146,14 @@ public class ImageCollector
 				BufferedReader in = new BufferedReader(new InputStreamReader(
 						url.openStream()));
 		
+				int lineCounter=0;
 				String inputLine;
 				while( (inputLine = in.readLine())!=null)
 				{
+					lineCounter++;
+					if(lineCounter<10) {
+						System.err.println("Flickr response: "+inputLine);	
+					}
 					String tofind = " nsid=\"";
 					int index = inputLine.indexOf(tofind);
 					if(index>0)
@@ -264,7 +222,7 @@ public class ImageCollector
 					}
 					else if( inputLine.contains("Invalid API Key"))
 					{
-						System.err.println("Flickr API key may be invalid!");
+						System.err.println("Flickr API is invalid!");
 						System.err.println("=> "+inputLine);
 					}
 					else

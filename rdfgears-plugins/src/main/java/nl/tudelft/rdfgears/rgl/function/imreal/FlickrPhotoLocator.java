@@ -31,9 +31,6 @@ import java.util.ArrayList;
 import nl.tudelft.rdfgears.engine.Config;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import nl.tudelft.rdfgears.engine.Engine;
 import nl.tudelft.rdfgears.engine.ValueFactory;
 import nl.tudelft.rdfgears.rgl.datamodel.type.BagType;
 import nl.tudelft.rdfgears.rgl.datamodel.type.RDFType;
@@ -51,7 +48,6 @@ import nl.tudelft.rdfgears.util.row.ValueRow;
 
 import java.util.*; 
 import java.io.*;
-import java.net.*;
 import java.text.*;
 
 
@@ -135,7 +131,7 @@ public class FlickrPhotoLocator  extends SimplyTypedRGLFunction  {
 	public static final String FIELD_DATE_TAKEN= "dateTaken";
 	public static final String FIELD_FLICKR_ACCURACY = "flickrAccuracy";
 
-	private static final String REGION_FILE = Config.getWritableDir()+"region.out";
+	private static final String REGION_FILE = Config.getRegionPath() +"/region.out";
 	private static final ArrayList<Region> worldRegions = new ArrayList<Region>();
 	private static boolean regionsRead = false;
 	
@@ -268,6 +264,7 @@ public class FlickrPhotoLocator  extends SimplyTypedRGLFunction  {
 					r.terms.put(term,tf);
 				}
 			}
+			br.close();
 		}
 		catch(Exception e)
 		{
@@ -296,7 +293,7 @@ public class FlickrPhotoLocator  extends SimplyTypedRGLFunction  {
 			String[] tweetTokens = {};
 			Date photoDate = photo.getDate();
 			long milliseconds1 = photoDate.getTime();
-
+			
 			for (String tweetDate : tweets.keySet()) {
 				Date d = null;
 				long milliseconds2;
@@ -354,6 +351,10 @@ public class FlickrPhotoLocator  extends SimplyTypedRGLFunction  {
 			if (bestMatch != null) {
 				photo.estLatitude = bestMatch.latCenter;
 				photo.estLongitude = bestMatch.lngCenter;
+			}
+			else
+			{
+				System.err.println("FlickrPhotoLocator: best match is null for photo "+photo.id);
 			}
 
 			ModifiableRecord locRecord = ValueFactory

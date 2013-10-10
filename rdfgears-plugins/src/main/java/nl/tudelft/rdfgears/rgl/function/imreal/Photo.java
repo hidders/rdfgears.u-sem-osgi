@@ -26,7 +26,6 @@ package nl.tudelft.rdfgears.rgl.function.imreal;
  * #L%
  */
 
-import java.lang.*;
 import java.text.*;
 import java.util.*;
 
