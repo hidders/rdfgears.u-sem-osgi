@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+
+<plugin>
+   <extension
+         point="org.eclipse.pde.ui.pluginContent">
+      <wizard
+            class="org.eclipse.pde.internal.ui.templates.osgi.UsemPluginNewWizard"
+            id="nl.tudelft.wis.usem.plugin.main"
+            name="U-SEM Plugin"
+            pureOSGi="true"
+            requiresActivator="true"
+            ui-content="false">
+         <description>
+         	U-Sem plugin template
+         </description>
+      </wizard>
+        
+   </extension>
+   
+</plugin>

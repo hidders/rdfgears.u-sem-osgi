@@ -1,0 +1,15 @@
+<processor label="$function$" category="Custom Java">
+	<description>
+	This is a custom java function that performs sentiment analysis
+	</description>
+	<inputs>
+		<function type="custom-java"> 
+			<param name="implementation" value="$packageName$.$function$"/>
+		</function>
+		<data iterate="false" name="input" label="Input">
+			<type><var name="input"/></type>
+		</data>
+	</inputs> 
+	<output/>
+</processor>
+

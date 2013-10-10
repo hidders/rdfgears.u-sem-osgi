@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<processor label="Update Entity" category="Data">
+<description>Write Entity Query to identify entities to be updated, bind the variables in the query to the input fields</description>
+<inputs>
+<function type="entityUpdate"> 
+<param name="sideEffects" type="Boolean" label="Does this function have side effects?" />
+<param name="setStatement" type="String" label="Bind fields"/>
+<param name="bindVariables" type="InputFields" label="Variables"/>
+<param name="query" label="Query" type="Query">
+<description>
+Write Entity Query to select entities to be updated.
+</description>
+</param>
+</function> 
+</inputs> 
+<output> 
+<type>
+<var name="output"/>
+</type>
+</output>
+</processor>

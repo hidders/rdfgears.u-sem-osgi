@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<processor label="Delete Query" category="Data">
+<description>Write Entity Query to identify entities for deletion, bind the variables in the query to the input fields</description>
+<inputs>
+<function type="entityDelete"> 
+<param name="sideEffects" type="Boolean" label="Does this function have side effects?" />
+<param name="bindVariables" type="InputFields" label="Variables"/>
+<param name="query" label="Query" type="Query">
+<description>
+Write Entity Query to delete the selected items.
+</description>
+</param>
+</function> 
+</inputs> 
+<output> 
+<type>
+<var name="output"/>
+</type>
+</output>
+</processor>

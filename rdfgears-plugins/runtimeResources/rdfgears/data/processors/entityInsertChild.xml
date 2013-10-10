@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<processor label="Insert Child Entity" category="Data">
+<description>Write Entity Query to identify parent, bind the variables in the query to the input fields</description>
+<inputs>
+<function type="entityInsertChild"> 
+<param name="sideEffects" type="Boolean" label="Does this function have side effects?" />
+<param name="field" type="String" label="Field"/>
+<param name="setStatement" type="String" label="Bind fields"/>
+<param name="bindVariables" type="InputFields" label="Variables"/>
+<param name="query" label="Query" type="Query">
+<description>
+Write Entity Query to select parent.
+</description>
+</param>
+</function> 
+</inputs> 
+<output> 
+<type>
+<var name="output"/>
+</type>
+</output>
+</processor>

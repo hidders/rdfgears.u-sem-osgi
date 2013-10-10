@@ -1,0 +1,10 @@
+syntax: regexp
+re:\.project$
+re:/target/
+re:\.DS_Store$
+re:\.class$
+re:\.jar$
+re:\.classpath$
+re:\.settings/
+
+path:./rdfgears-rest/src/main/webapp/WEB-INF/rdfgears.config

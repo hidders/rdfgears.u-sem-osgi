@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<processor label="Store Entity" category="Data">
+<description>Stores entity in the DB</description>
+<inputs> 
+<function type="storeEntity">
+<param name="sideEffects" type="Boolean" label="Does this function have side effects?" />
+<param name="entity" type="List" label="Entity to store">
+<source type="dataEntities" />
+</param>
+</function>
+</inputs>
+<output>
+<type>
+<var name="bagType"/> 
+</type>
+</output>
+</processor>
+
+

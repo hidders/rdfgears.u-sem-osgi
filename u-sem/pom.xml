@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>rdfgears</artifactId>
+		<groupId>nl.tudelft.rdfgears</groupId>
+		<version>0.2-SNAPSHOT</version>
+	</parent>
+	<artifactId>u-sem</artifactId>
+	<name>U-Sem: Plugins ui</name>
+	<url>http://code.google.com/p/rdfgears</url>
+	<packaging>war</packaging>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+	</build>
+</project>

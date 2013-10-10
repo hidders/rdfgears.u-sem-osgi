@@ -1,0 +1,151 @@
+<!--
+  #%L
+  RDFGears
+  %%
+  Copyright (C) 2013 WIS group at the TU Delft (http://www.wis.ewi.tudelft.nl/)
+  %%
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+  
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+  
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  THE SOFTWARE.
+  #L%
+  -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>U-Sem</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+	<link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+	<link href="assets/css/jquery-ui.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 43px;
+        padding-bottom: 40px;
+	  }
+	  #mydiv{
+		position:absolute;
+		overflow:hidden;
+		top:43px;
+		bottom:0px;
+		width:100%;
+	  }
+    </style>
+	
+	<script src="assets/js/jquery.js"></script>
+	<script src="assets/js/jquery-ui.js"></script>
+	<script src="assets/js/bootstrap.js"></script>
+	<script src="/datamanagement-ui/ui/js/previewEntities.js"></script>
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+	
+	<script>
+		function navigate(component, page)
+		{
+			removeActiveNav();
+			
+			if(component != null)
+				component.parentNode.className='active';
+			
+			if(myframe.src){
+			  myframe.src = page; }
+			else if(myframe.location){
+			  myframe.location.href = page; }
+		}
+		function removeActiveNav(){
+			var myObjs = nav.getElementsByTagName("li"); // get element by tag name
+			for(i=0; i<myObjs.length; i++) {
+				myObjs[i].className="";
+			}
+		}
+		
+	$(function() {
+		$( "#dialog" ).dialog({
+			autoOpen: false,
+			open: function( event, ui ) {loadEntities();}
+		});	
+	});
+	
+	</script>
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" onclick="navigate(null, 'home.html')">U-Sem</a>
+          <div class="nav-collapse">
+            <ul id="nav" class="nav" >
+			  <li><a onclick="navigate(this, '../usem-plugin-ui/services/services.jsp')">Services</a></li>
+              <li><a onclick="navigate(this, '../rdfgears-ui')">Orchestration</a></li>
+			  <li class="dropdown">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Plug-ins <b class="caret"></b></a>
+				<ul class="dropdown-menu">
+					<li><a onclick="navigate(this, '../usem-plugin-ui')">Plug-ins Management</a></li>
+					<li><a onclick="navigate(this, '../usem-plugin-ui/repository/')">Repository</a></li>
+				</ul>
+			  </li>
+			  <li class="dropdown">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Entities <b class="caret"></b></a>
+				<ul class="dropdown-menu">
+					<li><a onclick="navigate(this, '../datamanagement-ui/ui/entities.jsp')">Entity Management</a></li>
+					<li><a onclick="$('#dialog').dialog('open');">Preview Entities</a></li>
+				</ul>
+			  </li>	
+            </ul>
+            <form class="navbar-form pull-right">
+              <input class="span2" type="text" placeholder="Username">
+              <input class="span2" type="password" placeholder="Password">
+              <button type="submit" class="btn">Sign in</button>
+            </form>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+	<div id="mydiv">
+    <iframe id="myframe" 
+        height="100%" 
+		frameborder="0"
+        scrolling="no" 
+        src="home.html" 
+        width="100%">
+    </iframe>
+	</div>
+	
+	<div id="dialog" title="Preview Entities">
+		<button id="btnRefreshEntities" class="btn btn-primary">Refresh</button>
+		<div id="previewTree"></div>
+	</div>
+
+  </body>
+</html>

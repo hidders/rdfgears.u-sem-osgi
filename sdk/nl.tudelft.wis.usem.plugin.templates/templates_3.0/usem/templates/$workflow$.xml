@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdfgears>
+   <metadata>
+      <id>$workflow$</id>
+	  <name>$workflow$</name>
+	  <category/>
+      <description>$workflow$</description>
+      <password>imreal</password>
+   </metadata>
+   <workflow>
+      <workflowInputList x="57" y="66">
+         <workflowInputPort name="Input"/>
+      </workflowInputList>
+      <network output="node_628" x="379" y="239">
+         <processor id="node_628" x="245" y="84">
+            <function type="custom-java">
+               <config param="implementation">$packageName$.$function$</config>
+            </function>
+            <inputPort iterate="false" name="input">
+               <source workflowInputPort="Input"/>
+            </inputPort>
+         </processor>
+      </network>
+   </workflow>
+</rdfgears>
