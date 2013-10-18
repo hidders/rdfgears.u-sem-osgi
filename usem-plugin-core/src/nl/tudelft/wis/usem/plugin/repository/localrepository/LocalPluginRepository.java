@@ -41,7 +41,7 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 
 public class LocalPluginRepository implements PluginRepository {
 
-	public static final String DEFAULT_CONFIG_FILE = "../rdfgears.config";
+	public static final String DEFAULT_CONFIG_FILE = "../usem-plugin.config";
 	private static String repositoryDir;
 	private Properties configMap = new Properties();
 

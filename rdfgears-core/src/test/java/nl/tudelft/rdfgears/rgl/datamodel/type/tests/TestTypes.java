@@ -26,7 +26,6 @@ package nl.tudelft.rdfgears.rgl.datamodel.type.tests;
  * #L%
  */
 
-import junit.framework.AssertionFailedError;
 import nl.tudelft.rdfgears.rgl.datamodel.type.BagType;
 import nl.tudelft.rdfgears.rgl.datamodel.type.BooleanType;
 import nl.tudelft.rdfgears.rgl.datamodel.type.GraphType;

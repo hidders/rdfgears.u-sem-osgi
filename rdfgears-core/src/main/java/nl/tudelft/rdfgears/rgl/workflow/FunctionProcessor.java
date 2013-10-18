@@ -37,7 +37,6 @@ import nl.tudelft.rdfgears.rgl.datamodel.type.RGLType;
 import nl.tudelft.rdfgears.rgl.datamodel.value.BagValue;
 import nl.tudelft.rdfgears.rgl.datamodel.value.RGLValue;
 import nl.tudelft.rdfgears.rgl.datamodel.value.impl.LazyRGLValueMapping;
-import nl.tudelft.rdfgears.rgl.datamodel.value.impl.MappingBagValue;
 import nl.tudelft.rdfgears.rgl.exception.IterationTypingException;
 import nl.tudelft.rdfgears.rgl.exception.WorkflowCheckingException;
 import nl.tudelft.rdfgears.rgl.exception.WorkflowConnectionException;
@@ -169,7 +168,7 @@ public class FunctionProcessor extends ProcessorNode {
 						cachedResultValue = function.execute(inputRow);
 //						inputRow.setRecyclable(true);
 					} catch (RuntimeException e){
-						System.out.println("Problem executing function "+getFunction().getFullName()+" in processor "+getId());
+						System.out.println("Problem executing function "+getFunction().getShortName()+" in processor "+getId());
 						throw(e);
 					}	
 				}

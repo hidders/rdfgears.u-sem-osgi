@@ -26,7 +26,6 @@ package nl.tudelft.rdfgears.rgl.datamodel.value.impl;
  * #L%
  */
 
-import java.util.Collection;
 import java.util.Iterator;
 
 import nl.tudelft.rdfgears.rgl.datamodel.value.BagValue;
@@ -34,7 +33,6 @@ import nl.tudelft.rdfgears.rgl.datamodel.value.RGLValue;
 import nl.tudelft.rdfgears.rgl.datamodel.value.StreamingBagValue;
 import nl.tudelft.rdfgears.rgl.function.RGLFunction;
 import nl.tudelft.rdfgears.rgl.workflow.FunctionProcessor;
-import nl.tudelft.rdfgears.rgl.workflow.InputPort;
 import nl.tudelft.rdfgears.rgl.workflow.LazyRGLValue;
 import nl.tudelft.rdfgears.rgl.workflow.ValueRowIterator;
 import nl.tudelft.rdfgears.util.row.ValueRow;

@@ -30,16 +30,16 @@ log.level = FATAL
 #
 # Credentials for the database and the Flickr APIs
 #
-flickr.api.key = 56f999d2d1ae8b458ec79114eab8128a
+flickr.api.key = 
 
 database = localhost/imreal
-dbuser = imreal
-dbpassword = imreal
+dbuser = 
+dbpassword = 
 
-twitter.OAuth.consumer.key = 1MJ7laVrlbjt7hHRrK3w
-twitter.OAuth.consumer.secret = ha7UItaZcGkQPAgnqoINvhxF3dPgy1v0FVRna5uN2A
-twitter.OAuth.access.token = 92023570-ebBsO9ucwOoAKBOYZFCe446uD4xrrezMWTuJbJJhs
-twitter.OAuth.access.secret = kTtiQ86dwPaT1jUxzoJrY67IhtGyxRnr9prMIQV6W4
+twitter.OAuth.consumer.key = 
+twitter.OAuth.consumer.secret = 
+twitter.OAuth.access.token = 
+twitter.OAuth.access.secret = 
 
 # INTERNAL PARAMETERS
 

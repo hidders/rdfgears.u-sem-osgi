@@ -26,8 +26,6 @@ package nl.tudelft.rdfgears.rgl.datamodel.type;
  * #L%
  */
 
-import nl.tudelft.rdfgears.engine.Engine;
-
 /**
  * The universal subtype. Used as a placeholder type when the actual type is not known, 
  * but should never yield typing problems -- that is, when the specified value is null.

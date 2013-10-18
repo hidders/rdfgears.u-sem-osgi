@@ -26,8 +26,6 @@ package nl.tudelft.rdfgears.util.row;
  * #L%
  */
 
-import java.util.Set;
-
 import nl.tudelft.rdfgears.rgl.datamodel.value.RGLValue;
 
 

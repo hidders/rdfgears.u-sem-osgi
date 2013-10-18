@@ -26,7 +26,6 @@ package nl.tudelft.rdfgears.rgl.exception;
  * #L%
  */
 
-import nl.tudelft.rdfgears.rgl.workflow.FunctionProcessor;
 import nl.tudelft.rdfgears.rgl.workflow.WorkflowNode;
 
 

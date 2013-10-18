@@ -60,7 +60,6 @@ public class ModelTools {
 	
 	public static void printModel(Model m){ 
 		StmtIterator statements = m.listStatements();
-		int counter = 0;
 		while(statements.hasNext()){
 			Statement sm = statements.next();
 			System.out.println(sm);
