@@ -43,8 +43,10 @@ public class MySQLQueryExecutor {
 	// This will load the MySQL driver, each DB has its own driver
 	Class.forName("com.mysql.jdbc.Driver");
 	// Setup the connection with the DB
-	Connection connection = DriverManager.getConnection(Config.getDbURL(),
-		Config.getDbUsername(), Config.getDbPassword());
+	Config myConf = new Config();
+	
+	Connection connection = DriverManager.getConnection(myConf.getDatabaseURL(),
+			myConf.getDatabaseUser(), myConf.getDatabasePwd());
 
 	connection.setAutoCommit(false);
 

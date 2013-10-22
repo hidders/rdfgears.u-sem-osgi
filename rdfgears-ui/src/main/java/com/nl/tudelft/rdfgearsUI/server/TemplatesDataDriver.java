@@ -41,7 +41,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import nl.tudelft.rdfgears.plugin.WorkflowTemplate;
-import nl.tudelft.wis.usem.plugin.access_management.PluginAccessManager;
 import nl.tudelft.wis.usem.plugin.access_management.PluginAccessManagerFactory;
 
 import org.w3c.dom.Document;

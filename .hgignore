@@ -7,4 +7,5 @@ re:\.jar$
 re:\.classpath$
 re:\.settings/
 
-path:./rdfgears-rest/src/main/webapp/WEB-INF/rdfgears.config
+glob:./rdfgears-core/src/main/resources/rdfgears.config
+glob:./datamanagement-core/src/main/resources/datamanagement.config

@@ -26,7 +26,6 @@ package nl.tudelft.wis.datamanagement.backend.hbm;
  * #L%
  */
 
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -56,194 +55,198 @@ import com.sun.org.apache.xerces.internal.dom.DOMOutputImpl;
 
 public class HBMPersister {
 
-    private Element rootElement;
-    private Document doc;
-    
-    public void remove(String name) {
-	File file = fileForName(name);
-	if(file.exists()){
-	    file.delete();
+	private Element rootElement;
+	private Document doc;
+	private Config myConf;
+
+	public HBMPersister() {
+		myConf = new Config();
 	}
-    }
-
-    public void store(EntityDescriptor entityDescriptor) throws Exception {
-	DocumentBuilderFactory docFactory = DocumentBuilderFactory
-		.newInstance();
-	DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-
-	doc = docBuilder.newDocument();
-
-	DOMImplementation domImpl = doc.getImplementation();
-	DocumentType doctype = domImpl.createDocumentType("hibernate-mapping",
-		"-//Hibernate/Hibernate Mapping DTD 3.0//EN",
-		"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd");
-	doc.appendChild(doctype);
-
-	rootElement = doc.createElement("hibernate-mapping");
-	doc.appendChild(rootElement);
-
-	storeEntity(entityDescriptor.getEntity(), entityDescriptor.getName());
-
-	saveAsFile(entityDescriptor);
-    }
-
-    private void saveAsFile(EntityDescriptor entityDescriptor)
-	    throws Exception {
-
-	File result = fileForName(entityDescriptor.getName());
-
-	LSSerializer lsSerializer = ((DOMImplementationLS) doc
-		.getImplementation()).createLSSerializer();
-	lsSerializer.getDomConfig().setParameter("format-pretty-print", true);
 	
-	LSOutput out = new DOMOutputImpl();
-	FileOutputStream stream = new FileOutputStream(result);
-	out.setByteStream(stream);
-	try {
-	    lsSerializer.write(doc, out);
-	} finally {
-	    stream.close();
-	}
-
-	if (entityDescriptor.getOriginalName() != null
-		&& !entityDescriptor.getName().equalsIgnoreCase(
-			entityDescriptor.getOriginalName())) {
-	    File oldFile = fileForName(entityDescriptor.getOriginalName());
-	    oldFile.delete();
-	}
-    }
-
-    private File fileForName(String name) {
-	File result = new File(Config.getHBMDir(), name.toLowerCase()
-		+ ".hbm.xml");
-	return result;
-    }
-
-    private void storeEntity(TupleType entity, String entityName) {
-	Element classElement = doc.createElement("class");
-	rootElement.appendChild(classElement);
-
-	classElement.setAttribute("entity-name", entityName);
-	classElement.setAttribute("table", entityName);
-
-	Element idElement = doc.createElement("id");
-	classElement.appendChild(idElement);
-
-	idElement.setAttribute("name", "$id$");
-	idElement.setAttribute("type", "long");
-	idElement.setAttribute("column", "id");
-
-	Element genElement = doc.createElement("generator");
-	idElement.appendChild(genElement);
-
-	genElement.setAttribute("class", "native");
-
-	addProperties(entityName, entity, classElement);
-
-    }
-
-    private void addProperties(String entityName, TupleType entity,
-	    Element classElement) {
-	if (entity.getProperties() != null) {
-	    for (Field prop : entity.getProperties()) {
-		if (prop.getValue() instanceof BasicType) {
-		    addAtomicProperty(prop, classElement);
-		} else {
-		    addEntityProperty(entityName, prop, classElement);
+	public void remove(String name) {
+		File file = fileForName(name);
+		if (file.exists()) {
+			file.delete();
 		}
-	    }
-	}
-    }
-
-    private void addEntityProperty(String ownerEntityName, Field prop,
-	    Element classElement) {
-	if (prop.getValue() instanceof BagType) {
-	    Element bagElement = doc.createElement("bag");
-	    classElement.appendChild(bagElement);
-
-	    bagElement.setAttribute("name", prop.getName());
-	    bagElement.setAttribute("cascade", "all-delete-orphan");
-	    bagElement.setAttribute("lazy", "false");
-
-	    Element key = doc.createElement("key");
-	    bagElement.appendChild(key);
-
-	    key.setAttribute("column", ownerEntityName + "_id");
-
-	    Element oneToMany = doc.createElement("one-to-many");
-	    bagElement.appendChild(oneToMany);
-
-	    oneToMany.setAttribute("class",
-		    ownerEntityName + "_" + prop.getName());
-
-	    // Store the new entity
-	    storeEntity(((BagType) prop.getValue()).getTuple(), ownerEntityName
-		    + "_" + prop.getName());
-
-	} else {
-
-	    Element manyToOne = doc.createElement("many-to-one");
-	    classElement.appendChild(manyToOne);
-
-	    manyToOne.setAttribute("name", prop.getName());
-	    manyToOne.setAttribute("lazy", "false");
-	    manyToOne.setAttribute("class",
-		    ownerEntityName + "_" + prop.getName());
-	    manyToOne.setAttribute("column",
-		    ownerEntityName + "_" + prop.getName() + "_id");
-	    manyToOne.setAttribute("unique", "true");
-	    manyToOne.setAttribute("cascade", "all");
-
-	    // Store the new entity
-	    storeEntity(((TupleType) prop.getValue()).getTuple(),
-		    ownerEntityName + "_" + prop.getName());
 	}
 
-    }
+	public void store(EntityDescriptor entityDescriptor) throws Exception {
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory
+				.newInstance();
+		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
-    private void addAtomicProperty(Field prop, Element classElement) {
-	Element propertyElement = doc.createElement("property");
-	classElement.appendChild(propertyElement);
+		doc = docBuilder.newDocument();
 
-	propertyElement.setAttribute("name", prop.getName());
-	propertyElement.setAttribute("column", prop.getName());
-	propertyElement.setAttribute("type",
-		((BasicType) prop.getValue()).getJavaType());
+		DOMImplementation domImpl = doc.getImplementation();
+		DocumentType doctype = domImpl.createDocumentType("hibernate-mapping",
+				"-//Hibernate/Hibernate Mapping DTD 3.0//EN",
+				"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd");
+		doc.appendChild(doctype);
 
-    }
+		rootElement = doc.createElement("hibernate-mapping");
+		doc.appendChild(rootElement);
 
-    public static void main(String[] args) throws Exception {
-	TupleType desk = new TupleType();
-	List<Field> properties = new ArrayList<Field>();
-	properties.add(new Field("deskName", new LiteralType()));
-	properties.add(new Field("number", new BooleanType()));
-	desk.setProperties(properties);
+		storeEntity(entityDescriptor.getEntity(), entityDescriptor.getName());
 
-	TupleType department = new TupleType();
-	properties = new ArrayList<Field>();
-	properties.add(new Field("departmentName", new LiteralType()));
-	department.setProperties(properties);
+		saveAsFile(entityDescriptor);
+	}
 
-	TupleType employee = new TupleType();
-	properties = new ArrayList<Field>();
-	properties.add(new Field("name", new LiteralType()));
-	properties.add(new Field("departments", new BagType(department)));
-	properties.add(new Field("desk", desk));
-	employee.setProperties(properties);
+	private void saveAsFile(EntityDescriptor entityDescriptor) throws Exception {
 
-	EntityDescriptor desc = new EntityDescriptor();
+		File result = fileForName(entityDescriptor.getName());
 
-	desc.setName("Employee");
-	desc.setEntity(employee);
+		LSSerializer lsSerializer = ((DOMImplementationLS) doc
+				.getImplementation()).createLSSerializer();
+		lsSerializer.getDomConfig().setParameter("format-pretty-print", true);
 
-	// EntityDescriptiorManager edm = new EntityDescriptiorManager();
-	//
-	// edm.store(desc);
-	//
-	// System.out.println(edm.getByName("Employee").getEntity());
-	new HBMPersister().store(desc);
-	new HBMPersister().remove(desc.getName());
+		LSOutput out = new DOMOutputImpl();
+		FileOutputStream stream = new FileOutputStream(result);
+		out.setByteStream(stream);
+		try {
+			lsSerializer.write(doc, out);
+		} finally {
+			stream.close();
+		}
 
-    }
+		if (entityDescriptor.getOriginalName() != null
+				&& !entityDescriptor.getName().equalsIgnoreCase(
+						entityDescriptor.getOriginalName())) {
+			File oldFile = fileForName(entityDescriptor.getOriginalName());
+			oldFile.delete();
+		}
+	}
+
+	private File fileForName(String name) {
+		File result = new File(myConf.getHBMDir(), name.toLowerCase()
+				+ ".hbm.xml");
+		return result;
+	}
+
+	private void storeEntity(TupleType entity, String entityName) {
+		Element classElement = doc.createElement("class");
+		rootElement.appendChild(classElement);
+
+		classElement.setAttribute("entity-name", entityName);
+		classElement.setAttribute("table", entityName);
+
+		Element idElement = doc.createElement("id");
+		classElement.appendChild(idElement);
+
+		idElement.setAttribute("name", "$id$");
+		idElement.setAttribute("type", "long");
+		idElement.setAttribute("column", "id");
+
+		Element genElement = doc.createElement("generator");
+		idElement.appendChild(genElement);
+
+		genElement.setAttribute("class", "native");
+
+		addProperties(entityName, entity, classElement);
+
+	}
+
+	private void addProperties(String entityName, TupleType entity,
+			Element classElement) {
+		if (entity.getProperties() != null) {
+			for (Field prop : entity.getProperties()) {
+				if (prop.getValue() instanceof BasicType) {
+					addAtomicProperty(prop, classElement);
+				} else {
+					addEntityProperty(entityName, prop, classElement);
+				}
+			}
+		}
+	}
+
+	private void addEntityProperty(String ownerEntityName, Field prop,
+			Element classElement) {
+		if (prop.getValue() instanceof BagType) {
+			Element bagElement = doc.createElement("bag");
+			classElement.appendChild(bagElement);
+
+			bagElement.setAttribute("name", prop.getName());
+			bagElement.setAttribute("cascade", "all-delete-orphan");
+			bagElement.setAttribute("lazy", "false");
+
+			Element key = doc.createElement("key");
+			bagElement.appendChild(key);
+
+			key.setAttribute("column", ownerEntityName + "_id");
+
+			Element oneToMany = doc.createElement("one-to-many");
+			bagElement.appendChild(oneToMany);
+
+			oneToMany.setAttribute("class",
+					ownerEntityName + "_" + prop.getName());
+
+			// Store the new entity
+			storeEntity(((BagType) prop.getValue()).getTuple(), ownerEntityName
+					+ "_" + prop.getName());
+
+		} else {
+
+			Element manyToOne = doc.createElement("many-to-one");
+			classElement.appendChild(manyToOne);
+
+			manyToOne.setAttribute("name", prop.getName());
+			manyToOne.setAttribute("lazy", "false");
+			manyToOne.setAttribute("class",
+					ownerEntityName + "_" + prop.getName());
+			manyToOne.setAttribute("column",
+					ownerEntityName + "_" + prop.getName() + "_id");
+			manyToOne.setAttribute("unique", "true");
+			manyToOne.setAttribute("cascade", "all");
+
+			// Store the new entity
+			storeEntity(((TupleType) prop.getValue()).getTuple(),
+					ownerEntityName + "_" + prop.getName());
+		}
+
+	}
+
+	private void addAtomicProperty(Field prop, Element classElement) {
+		Element propertyElement = doc.createElement("property");
+		classElement.appendChild(propertyElement);
+
+		propertyElement.setAttribute("name", prop.getName());
+		propertyElement.setAttribute("column", prop.getName());
+		propertyElement.setAttribute("type",
+				((BasicType) prop.getValue()).getJavaType());
+
+	}
+
+	public static void main(String[] args) throws Exception {
+		TupleType desk = new TupleType();
+		List<Field> properties = new ArrayList<Field>();
+		properties.add(new Field("deskName", new LiteralType()));
+		properties.add(new Field("number", new BooleanType()));
+		desk.setProperties(properties);
+
+		TupleType department = new TupleType();
+		properties = new ArrayList<Field>();
+		properties.add(new Field("departmentName", new LiteralType()));
+		department.setProperties(properties);
+
+		TupleType employee = new TupleType();
+		properties = new ArrayList<Field>();
+		properties.add(new Field("name", new LiteralType()));
+		properties.add(new Field("departments", new BagType(department)));
+		properties.add(new Field("desk", desk));
+		employee.setProperties(properties);
+
+		EntityDescriptor desc = new EntityDescriptor();
+
+		desc.setName("Employee");
+		desc.setEntity(employee);
+
+		// EntityDescriptiorManager edm = new EntityDescriptiorManager();
+		//
+		// edm.store(desc);
+		//
+		// System.out.println(edm.getByName("Employee").getEntity());
+		new HBMPersister().store(desc);
+		new HBMPersister().remove(desc.getName());
+
+	}
 
 }

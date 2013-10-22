@@ -34,12 +34,9 @@ import java.util.Properties;
 import org.apache.log4j.Level;
 
 /**
- * This configuration system is a bit chaotic and may be adapted to use a better
- * mechanism.
- * 
- * This idea is to not make the properties map available, as we like the
- * properties to be referenced statically (i.e. not by means of a string key),
- * to make them more easy to find throughout the code.
+ * This configuration system reads the properties defined in 
+ * DEFAULT_CONFIG_FILE, which is included in the resources of 
+ * this project
  * 
  * @author Eric Feliksik
  * 

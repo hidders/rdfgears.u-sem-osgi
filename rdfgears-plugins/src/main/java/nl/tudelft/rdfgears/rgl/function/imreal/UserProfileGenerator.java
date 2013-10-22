@@ -26,14 +26,10 @@ package nl.tudelft.rdfgears.rgl.function.imreal;
  * #L%
  */
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
 import java.util.List;
 
-import nl.tudelft.rdfgears.engine.Config;
 import nl.tudelft.rdfgears.engine.ValueFactory;
 import nl.tudelft.rdfgears.rgl.datamodel.value.RGLValue;
 import nl.tudelft.rdfgears.rgl.function.imreal.userprofile.Dimension;

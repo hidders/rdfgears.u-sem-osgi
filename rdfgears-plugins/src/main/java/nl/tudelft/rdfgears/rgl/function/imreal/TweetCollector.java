@@ -160,6 +160,7 @@ public class TweetCollector
 										+ line);
 					}
 				}
+				br.close();
 			}
 			return tweetMap;
 		} catch (Exception e) {
@@ -258,6 +259,7 @@ public class TweetCollector
 										+ line);
 					}
 				}
+				br.close();
 			}
 			return tweetMap;
 		} catch (Exception e) {

@@ -36,6 +36,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
 
+import nl.tudelft.wis.usem.plugin.repository.localrepository.LocalPluginRepository;
+
 import org.eclipse.osgi.framework.internal.core.Constants;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
@@ -47,7 +49,7 @@ public class Utils {
 		FrameworkFactory frameworkFactory = ServiceLoader
 				.load(FrameworkFactory.class).iterator().next();
 		Map<String, String> config = new HashMap<String, String>();
-		config.put(Constants.FRAMEWORK_STORAGE, getPluginDir());
+		config.put(Constants.FRAMEWORK_STORAGE, new LocalPluginRepository().getPluginDir());
 		
 		if(additionalConfig != null)
 			config.putAll(additionalConfig);
@@ -75,13 +77,6 @@ public class Utils {
 		out.close();
 	}
 	
-	public static String getPluginDir() {
-		File destdir = new File(System.getProperty("java.io.tmpdir")
-			+ "/rdfgears/plugins");
-		if (!destdir.exists())
-		    destdir.mkdirs();
-
-		return destdir.getAbsolutePath();
-	    }
+	
 
 }

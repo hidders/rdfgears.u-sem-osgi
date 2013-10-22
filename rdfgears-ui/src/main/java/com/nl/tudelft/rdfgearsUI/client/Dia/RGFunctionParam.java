@@ -31,11 +31,8 @@ package com.nl.tudelft.rdfgearsUI.client.Dia;
  */
 
 
-import java.util.Observable;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.DOM;
-import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 
 enum RGFunctionParamType {

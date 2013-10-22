@@ -28,18 +28,9 @@ package com.nl.tudelft.rdfgearsUI.client.Dia;
 
 
 import static com.google.gwt.query.client.GQuery.$;
-import static gwtquery.plugins.draggable.client.Draggable.Draggable;
-
-import gwtquery.plugins.draggable.client.DraggableOptions;
-import gwtquery.plugins.draggable.client.DraggableOptions.DragFunction;
-import gwtquery.plugins.draggable.client.events.DragContext;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
-import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.DOM;
-
-import com.allen_sauer.gwt.log.client.Log;
 
 public class TemplateListItem extends NavigationListItem{
 	Element item, labelContainer, descContainer, menuContainer;

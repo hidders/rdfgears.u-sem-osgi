@@ -27,7 +27,6 @@ package com.nl.tudelft.rdfgearsUI.client.Dia;
  */
 
 
-import com.google.gwt.event.shared.EventHandler;
 import com.google.web.bindery.event.shared.Event;
 import com.google.web.bindery.event.shared.EventBus;
 

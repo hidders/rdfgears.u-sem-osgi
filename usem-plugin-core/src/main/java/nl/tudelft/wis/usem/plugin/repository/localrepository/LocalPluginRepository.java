@@ -41,23 +41,40 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 
 public class LocalPluginRepository implements PluginRepository {
 
-	public static final String DEFAULT_CONFIG_FILE = "../usem-plugin.config";
+	public static final String DEFAULT_CONFIG_FILE = "usem-plugin-core.config";
 	private static String repositoryDir;
-	private Properties configMap = new Properties();
+	private static Properties configMap = new Properties();
+	private boolean initDone = false;
+
+	public LocalPluginRepository(){
+		init();
+	}
+	
+	private boolean init() {
+		if (!initDone) {
+			try {
+				configMap.load(getStream(DEFAULT_CONFIG_FILE));
+			} catch (Exception e) {
+				System.out.println("Config file " + DEFAULT_CONFIG_FILE
+						+ " not found");
+				return false;
+			}
+		}
+		initDone = true;
+		return true;
+
+	}
 
 	@Override
 	public String listRepositoryContents(Map<String, Object> properties) {
 
-		try {
-			configMap.load(getStream(DEFAULT_CONFIG_FILE));
-		} catch (Exception e) {
-			
-			System.out.println("Config file " + DEFAULT_CONFIG_FILE + " not found");
+		if (!init()) {
 			return null;
 		}
 
-		repositoryDir = configMap.getProperty("repository.dir");
-		
+		repositoryDir = configMap.getProperty("rdfgears.base.path")
+				+ configMap.getProperty("repository.dir");
+
 		File repoFolder = new File(repositoryDir);
 
 		System.out.println(repoFolder.getAbsolutePath());
@@ -116,6 +133,7 @@ public class LocalPluginRepository implements PluginRepository {
 	@Override
 	public InputStream getPlugin(Map<String, Object> properties, String key)
 			throws Exception {
+
 		File plugin = new File(LocalPluginRepository.repositoryDir + key);
 
 		return new FileInputStream(plugin);
@@ -124,12 +142,13 @@ public class LocalPluginRepository implements PluginRepository {
 	@Override
 	public String getPluginName(Map<String, Object> properties, String key)
 			throws Exception {
-		return new File(LocalPluginRepository.repositoryDir + key)
-				.getName();
+
+		return new File(LocalPluginRepository.repositoryDir + key).getName();
 	}
 
 	public boolean publishlPlugin(String folder, String pluginName,
 			InputStream plugin) {
+
 		try {
 			File publishFolder = new File(repositoryDir + File.separator
 					+ folder.trim());
@@ -147,5 +166,18 @@ public class LocalPluginRepository implements PluginRepository {
 		}
 
 		return true;
+	}
+
+	public String getPluginDir() {
+
+		String dirName = configMap.getProperty("rdfgears.base.path")
+				+ configMap.getProperty("repository.dir");
+
+		File destdir = new File(dirName);
+
+		if (!destdir.exists())
+			destdir.mkdirs();
+
+		return destdir.getAbsolutePath();
 	}
 }

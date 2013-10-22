@@ -155,10 +155,10 @@
    <module>usem-plugin-core</module>
    <module>usem-plugin-ui</module>
    <module>rdfgears-plugins</module>
-   <module>rdfgears-ui</module>
    <module>rdfgears-rest</module> 
    <module>datamanagement-core</module>
    <module>datamanagement-ui</module>
    <module>u-sem</module>
+   <module>rdfgears-ui</module>
   </modules>
 </project>

@@ -76,7 +76,7 @@ public class EntityDefinitionEndpoint {
     }
 
     public static void main(String[] args) {
-	String data = "{\"name\":\"test\",\"description\":\"test\",\"readAccess\":false,\"writeAccess\":true,\"entities\":[{\"title\":\"Propety\",\"key\":\"_2\",\"isFolder\":false,\"isLazy\":false,\"tooltip\":null,\"href\":null,\"icon\":null,\"addClass\":null,\"noLink\":false,\"activate\":false,\"focus\":false,\"expand\":false,\"select\":false,\"hideCheckbox\":false,\"unselectable\":false,\"name\":\"Property\",\"rglType\":\"double\"},{\"title\":\"PropetyMult\",\"key\":\"_3\",\"isFolder\":true,\"isLazy\":false,\"tooltip\":null,\"href\":null,\"icon\":null,\"addClass\":null,\"noLink\":false,\"activate\":false,\"focus\":false,\"expand\":false,\"select\":false,\"hideCheckbox\":false,\"unselectable\":false,\"name\":\"PropetyMult\",\"rglType\":\"double\",\"isMultiple\":true}]}";
+	String data = "{\"name\":\"test\",\"description\":\"test\",\"readAccess\":false,\"writeAccess\":true,\"entities\":[{\"title\":\"Property\",\"key\":\"_2\",\"isFolder\":false,\"isLazy\":false,\"tooltip\":null,\"href\":null,\"icon\":null,\"addClass\":null,\"noLink\":false,\"activate\":false,\"focus\":false,\"expand\":false,\"select\":false,\"hideCheckbox\":false,\"unselectable\":false,\"name\":\"Property\",\"rglType\":\"double\"},{\"title\":\"PropertyMult\",\"key\":\"_3\",\"isFolder\":true,\"isLazy\":false,\"tooltip\":null,\"href\":null,\"icon\":null,\"addClass\":null,\"noLink\":false,\"activate\":false,\"focus\":false,\"expand\":false,\"select\":false,\"hideCheckbox\":false,\"unselectable\":false,\"name\":\"PropertyMult\",\"rglType\":\"double\",\"isMultiple\":true}]}";
 	JSONObject jsonObj = (JSONObject) JSONSerializer.toJSON(data);
 
 	new EntityDefinitionEndpoint().save(jsonObj);

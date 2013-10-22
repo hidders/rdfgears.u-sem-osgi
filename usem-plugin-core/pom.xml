@@ -13,11 +13,14 @@
 	<url>http://code.google.com/p/rdfgears</url>
 	<packaging>jar</packaging>
 
-	<build>
-		<sourceDirectory>src</sourceDirectory>
-	</build>
-
 	<dependencies>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-servlet-api</artifactId>
+			<version>7.0.32</version>
+			<scope>provided</scope>
+		</dependency>
+<!--
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
@@ -38,6 +41,7 @@
 			<artifactId>ezmorph</artifactId>
 			<version>1.0.6</version>
 		</dependency>
+-->
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>org.eclipse.osgi</artifactId>

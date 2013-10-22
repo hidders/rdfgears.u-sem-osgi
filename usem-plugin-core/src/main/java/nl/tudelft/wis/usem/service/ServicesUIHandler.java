@@ -41,7 +41,7 @@ import org.w3c.dom.Element;
 
 public class ServicesUIHandler {
 
-	private static final String REST_INPUT_URL = "../../rdfgears-rest/user/input/";
+	private static final String REST_INPUT_URL = "/rdfgears-rest/user/input/";
 
 	public String getServicesHTML() {
 		StringBuilder sb = new StringBuilder();

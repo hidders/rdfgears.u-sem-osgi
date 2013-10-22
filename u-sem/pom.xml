@@ -13,7 +13,4 @@
 	<url>http://code.google.com/p/rdfgears</url>
 	<packaging>war</packaging>
 
-	<build>
-		<sourceDirectory>src</sourceDirectory>
-	</build>
 </project>

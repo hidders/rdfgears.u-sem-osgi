@@ -132,7 +132,7 @@ $(function() {
 	$("#btnAddAtomic").click(function() {
 		// Sample: add an hierarchic branch using an array
 		var obj = [ {
-			title : 'Propety',
+			title : 'Property',
 			name : 'Property',
 			isFolder : false,
 			rglType : 'boolean'

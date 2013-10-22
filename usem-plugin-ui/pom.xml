@@ -13,11 +13,9 @@
 	<url>http://code.google.com/p/rdfgears</url>
 	<packaging>war</packaging>
 
-	<build>
-		<sourceDirectory>src</sourceDirectory>
-	</build>
 
 	<dependencies>
+<!--
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
@@ -50,12 +48,12 @@
 			<classifier>jdk15</classifier>
 		</dependency>
 
+-->
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
 			<artifactId>usem-plugin-core</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-coyote</artifactId>
