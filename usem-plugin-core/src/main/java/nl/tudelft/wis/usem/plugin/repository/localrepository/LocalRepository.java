@@ -39,14 +39,14 @@ import nl.tudelft.wis.usem.plugin.repository.PluginRepository;
 
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 
-public class LocalPluginRepository implements PluginRepository {
+public class LocalRepository implements PluginRepository {
 
 	public static final String DEFAULT_CONFIG_FILE = "usem-plugin-core.config";
 	private static String repositoryDir;
 	private static Properties configMap = new Properties();
 	private boolean initDone = false;
 
-	public LocalPluginRepository(){
+	public LocalRepository(){
 		init();
 	}
 	
@@ -134,7 +134,7 @@ public class LocalPluginRepository implements PluginRepository {
 	public InputStream getPlugin(Map<String, Object> properties, String key)
 			throws Exception {
 
-		File plugin = new File(LocalPluginRepository.repositoryDir + key);
+		File plugin = new File(LocalRepository.repositoryDir + key);
 
 		return new FileInputStream(plugin);
 	}
@@ -143,7 +143,7 @@ public class LocalPluginRepository implements PluginRepository {
 	public String getPluginName(Map<String, Object> properties, String key)
 			throws Exception {
 
-		return new File(LocalPluginRepository.repositoryDir + key).getName();
+		return new File(LocalRepository.repositoryDir + key).getName();
 	}
 
 	public boolean publishlPlugin(String folder, String pluginName,
@@ -166,6 +166,16 @@ public class LocalPluginRepository implements PluginRepository {
 		}
 
 		return true;
+	}
+	
+	public String getWorkflowsDir() {
+		
+		String dirName = configMap.getProperty("rdfgears.base.path")
+				+ configMap.getProperty("workflow.dir");
+		
+		File dir = new File(dirName);
+		dir.mkdirs();
+		return dirName;
 	}
 
 	public String getPluginDir() {

@@ -4,8 +4,8 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>rdfgears</artifactId>
-    <groupId>nl.tudelft.rdfgears</groupId>
-    <version>0.2-SNAPSHOT</version>
+    <groupId>nl.tudelft.rdfgears-osgi</groupId>
+    <version>0.1-SNAPSHOT</version>
   </parent>
   <artifactId>rdfgears-rest</artifactId>
   <name>RDF Gears: RESTful Web interface for workflow execution</name>

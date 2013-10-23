@@ -6,8 +6,8 @@
 
   <parent>
     <artifactId>rdfgears</artifactId>
-    <groupId>nl.tudelft.rdfgears</groupId>
-    <version>0.2-SNAPSHOT</version>
+    <groupId>nl.tudelft.rdfgears-osgi</groupId>
+    <version>0.1-SNAPSHOT</version>
   </parent>
   
   <!-- POM file generated with GWT webAppCreator -->

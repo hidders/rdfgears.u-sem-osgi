@@ -36,6 +36,8 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import nl.tudelft.wis.usem.plugin.repository.localrepository.LocalRepository;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -69,7 +71,7 @@ public class ServicesUIHandler {
 	}
 
 	private Map<String, List<WorkflowDesc>> getWorkflowDirContent() {
-		File operatorDir = new File(getWritableDir());
+		File operatorDir = new File(new LocalRepository().getWorkflowsDir());
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder;
 		Map<String, List<WorkflowDesc>> categories = new HashMap<String, List<WorkflowDesc>>();
@@ -114,14 +116,6 @@ public class ServicesUIHandler {
 		}
 
 		return categories;
-	}
-
-	private static String getWritableDir() {
-		String path = System.getProperty("java.io.tmpdir")
-				+ "/rdfgears/data/workflows/";
-		File dir = new File(path);
-		dir.mkdirs();
-		return path;
 	}
 
 	private class WorkflowDesc {

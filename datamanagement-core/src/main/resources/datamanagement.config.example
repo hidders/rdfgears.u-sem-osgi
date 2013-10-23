@@ -10,7 +10,12 @@ hbm.path = hbm
 
 data.types.path = dataTypes
 
-database.url = jdbc:mysql://localhost:3306/imreal
+# remember to grant rights to the user on the table
+# CREATE USER '<dbuser>'@'localhost' IDENTIFIED BY '<dbpassword>'; 
+# CREATE DATABASE IF NOT EXISTS `<dbname>` ;
+# GRANT ALL PRIVILEGES ON `<dbname>`.* TO '<dbuser>'@'localhost';
+
+database.url = jdbc:mysql://localhost:3306/entityData
 
 dbuser =
 

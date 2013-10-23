@@ -4,8 +4,8 @@
 
 	<parent>
     		<artifactId>rdfgears</artifactId>
-    		<groupId>nl.tudelft.rdfgears</groupId>
-   		<version>0.2-SNAPSHOT</version>
+    		<groupId>nl.tudelft.rdfgears-osgi</groupId>
+   		<version>0.1-SNAPSHOT</version>
   	</parent>
 
 	<artifactId>datamanagement-core</artifactId>

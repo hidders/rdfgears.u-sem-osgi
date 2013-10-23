@@ -36,7 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
 
-import nl.tudelft.wis.usem.plugin.repository.localrepository.LocalPluginRepository;
+import nl.tudelft.wis.usem.plugin.repository.localrepository.LocalRepository;
 
 import org.eclipse.osgi.framework.internal.core.Constants;
 import org.osgi.framework.BundleException;
@@ -49,7 +49,7 @@ public class Utils {
 		FrameworkFactory frameworkFactory = ServiceLoader
 				.load(FrameworkFactory.class).iterator().next();
 		Map<String, String> config = new HashMap<String, String>();
-		config.put(Constants.FRAMEWORK_STORAGE, new LocalPluginRepository().getPluginDir());
+		config.put(Constants.FRAMEWORK_STORAGE, new LocalRepository().getPluginDir());
 		
 		if(additionalConfig != null)
 			config.putAll(additionalConfig);
