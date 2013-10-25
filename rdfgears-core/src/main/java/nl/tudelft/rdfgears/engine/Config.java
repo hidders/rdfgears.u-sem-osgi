@@ -34,9 +34,8 @@ import java.util.Properties;
 import org.apache.log4j.Level;
 
 /**
- * This configuration system reads the properties defined in 
- * DEFAULT_CONFIG_FILE, which is included in the resources of 
- * this project
+ * This configuration system reads the properties defined in
+ * DEFAULT_CONFIG_FILE, which is included in the resources of this project
  * 
  * @author Eric Feliksik
  * 
@@ -45,10 +44,9 @@ public class Config {
 
 	public static final String DEFAULT_DB_PATH = "./bdb";
 	public static final String DEFAULT_WORKFLOW_PATH = "workflows/";
-	public static final String DEFAULT_CONFIG_FILE = "../rdfgears.config";
+	public static final String DEFAULT_CONFIG_FILE = "../rdfgears/rdfgears.config";
 	public static final String DEFAULT_WORKFILES_PATH = "files_generated/";
-	
-	
+
 	private static final Level DEFAULT_LOG_LEVEL = Level.INFO;
 	private static final int DEFAULT_SPARQL_RETRY_MAX = 3;
 	private static final long DEFAULT_SPARQL_RETRY_PAUSE = 1000; // milliseconds
@@ -91,41 +89,33 @@ public class Config {
 
 		if (fileName != null) {
 			try {
-				configMap.load(getStream(fileName));
-			} catch (Exception e) {
-				URL dir = this.getClass().getClassLoader().getResource(".");
-				if (dir != null) {
-					Engine.getLogger().debug(
-							"Cannot open configuration file '" + fileName
-									+ "' for reading in dir " + dir.getPath()
-									+ ". Trying Current Working Dir.");
-				} else {
-					Engine.getLogger()
-							.debug("Cannot open configuration file '"
-									+ fileName
-									+ "' as there is no ClassLoader directory accessible. Trying Current Working Dir.");
+				configMap.load(new FileInputStream(DEFAULT_CONFIG_FILE));
+
+				// may not work in .jar files, etc
+				String dirName = System.getProperty("user.dir");
+				System.out.println("Loaded rdfgears-core config file " + dirName + "/"
+						+ DEFAULT_CONFIG_FILE);
+			} catch (Exception e2) {
+				System.err.println("Cannot open configuration file '"
+						+ DEFAULT_CONFIG_FILE + "' for reading in dir "
+						+ System.getProperty("user.dir"));
+
+				try {
+					configMap.load(getStream(DEFAULT_CONFIG_FILE));
+				} catch (Exception e) {
+					URL dir = this.getClass().getClassLoader().getResource(".");
+					if (dir != null) {
+						System.err.println("Cannot open configuration file '"
+								+ DEFAULT_CONFIG_FILE + "' for reading in dir "
+								+ dir.getPath());
+					} else {
+						System.err
+								.println("Cannot open configuration file '"
+										+ DEFAULT_CONFIG_FILE
+										+ "' as there is no ClassLoader directory accessible.");
+					}
 				}
 
-				/*
-				 * try loading it from CWD, if it is not the same location as
-				 * where this class is stored. Necessary for the junit test :-(
-				 */
-				try {
-					configMap.load(new FileInputStream(fileName)); // may not
-																	// work in
-																	// .jar
-																	// files,
-																	// etc
-					String dirName = System.getProperty("user.dir");
-					Engine.getLogger().debug(
-							"Ok, loaded config file " + dirName + "/"
-									+ fileName);
-				} catch (Exception e2) {
-					Engine.getLogger().debug(
-							"Cannot open configuration file '" + fileName
-									+ "' for reading in dir "
-									+ System.getProperty("user.dir"));
-				}
 			}
 		}
 		initConfig();
@@ -151,7 +141,7 @@ public class Config {
 	}
 
 	private void initConfig() {
-		configurePath(configMap.getProperty("workflow.path",
+		configurePath(configMap.getProperty("workflows.path",
 				DEFAULT_WORKFLOW_PATH));
 
 		/* pipelining enabled by default */
@@ -255,16 +245,14 @@ public class Config {
 		return Boolean.parseBoolean(configMap.getProperty("is.disk.based"));
 	}
 
-	/* function removed as it introduces a dependency to a temp dir
-	 * which is not controlled by the config file
+	/*
+	 * function removed as it introduces a dependency to a temp dir which is not
+	 * controlled by the config file
 	 * 
-	 public static String getWritableDir() {
-		String path = System.getProperty("java.io.tmpdir") + "/rdfgears/";
-		File dir = new File(path);
-		dir.mkdirs();
-		return path;
-	}
-	*/
+	 * public static String getWritableDir() { String path =
+	 * System.getProperty("java.io.tmpdir") + "/rdfgears/"; File dir = new
+	 * File(path); dir.mkdirs(); return path; }
+	 */
 
 	public static String getFlickrApiKey() {
 
@@ -288,14 +276,16 @@ public class Config {
 
 	public static String getLexiconPath() {
 
-		return configMap.getProperty("rdfgears.base.path") + configMap.getProperty("lexicon.path");
+		return configMap.getProperty("rdfgears.base.path")
+				+ configMap.getProperty("lexicon.path");
 	}
 
 	public static String getLanguageProfilePath() {
 
-		return configMap.getProperty("rdfgears.base.path") + configMap.getProperty("language.profile.path");
+		return configMap.getProperty("rdfgears.base.path")
+				+ configMap.getProperty("language.profile.path");
 	}
-	
+
 	public static String getBasePath() {
 
 		return configMap.getProperty("rdfgears.base.path");
@@ -303,49 +293,57 @@ public class Config {
 
 	public static String getFlickrDataPath() {
 
-		return configMap.getProperty("rdfgears.base.path") + configMap.getProperty("flickr.data.path");
+		return configMap.getProperty("rdfgears.base.path")
+				+ configMap.getProperty("flickr.data.path");
 	}
 
 	public static String getHofstedePath() {
 
-		return configMap.getProperty("rdfgears.base.path") + configMap.getProperty("hofstede.file.path");
+		return configMap.getProperty("rdfgears.base.path")
+				+ configMap.getProperty("hofstede.file.path");
 	}
 
 	public static String getRegionPath() {
 
-		return configMap.getProperty("rdfgears.base.path") + configMap.getProperty("region.file.path");
+		return configMap.getProperty("rdfgears.base.path")
+				+ configMap.getProperty("region.file.path");
 	}
-	
+
 	public static String getTwitter4jPath() {
 
-		return configMap.getProperty("rdfgears.base.path") + configMap.getProperty("twitter4j.file.path");
+		return configMap.getProperty("rdfgears.base.path")
+				+ configMap.getProperty("twitter4j.file.path");
 	}
 
 	public static String getStoragePath() {
 
-		return configMap.getProperty("rdfgears.base.path") + configMap.getProperty("value.storage.path");
+		return configMap.getProperty("rdfgears.base.path")
+				+ configMap.getProperty("value.storage.path");
 	}
 
 	public static String getTwitterPath() {
 
-		return configMap.getProperty("rdfgears.base.path") + configMap.getProperty("twitter.data.path");
+		return configMap.getProperty("rdfgears.base.path")
+				+ configMap.getProperty("twitter.data.path");
 	}
+
 	public static String getWorkflowPath() {
 		return configMap.getProperty("rdfgears.base.path") + workflowPath;
 	}
-	
+
 	public String getPathToWorkFiles() {
-		return configMap.getProperty("rdfgears.base.path") + 
-				configMap.getProperty("work.files.path", DEFAULT_WORKFILES_PATH);
+		return configMap.getProperty("rdfgears.base.path")
+				+ configMap.getProperty("work.files.path",
+						DEFAULT_WORKFILES_PATH);
 	}
 
 	public static String getOAuthConsumerKey() {
-		
+
 		return configMap.getProperty("twitter.OAuth.consumer.key");
 	}
 
 	public static String getOAuthConsumerSecret() {
-	
+
 		return configMap.getProperty("twitter.OAuth.consumer.secret");
 	}
 
@@ -355,9 +353,8 @@ public class Config {
 	}
 
 	public static String getOAuthAccessTokenSecret() {
-		
+
 		return configMap.getProperty("twitter.OAuth.access.secret");
 	}
-	
-	
+
 }

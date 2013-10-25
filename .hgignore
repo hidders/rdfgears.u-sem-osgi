@@ -6,6 +6,7 @@ re:\.class$
 re:\.jar$
 re:\.classpath$
 re:\.settings/
+re:rdfgears-ui/.gwt-tmp/
 
 glob:./rdfgears-core/src/main/resources/rdfgears.config
 glob:./datamanagement-core/src/main/resources/datamanagement.config

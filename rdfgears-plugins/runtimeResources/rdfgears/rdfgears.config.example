@@ -13,7 +13,17 @@ rdfgears.base.path = ../rdfgears/
 # (in case you can create them empty)
 # An empty value of the parameter means it points to the base path
 #
-workflow.path = data/workflows
+workflows.path = data/workflows
+processors.path = data/processors
+functions.path = data/functions
+repository.path = pluginRepository
+hbm.path = hbm
+data.types.path = dataTypes
+
+
+rdfgears.rest.URL = /rdfgears-rest
+
+
 lexicon.path = lexicon
 language.profile.path = imreal-language-profiles
 flickr.data.path = flickrdata
@@ -34,6 +44,17 @@ flickr.api.key =
 
 database = localhost/imreal
 dbuser = 
+dbpassword = 
+
+# remember to grant rights to the user on the table
+# CREATE USER '<dbuser>'@'localhost' IDENTIFIED BY '<dbpassword>'; 
+# CREATE DATABASE IF NOT EXISTS `<dbname>` ;
+# GRANT ALL PRIVILEGES ON `<dbname>`.* TO '<dbuser>'@'localhost';
+
+database.url = jdbc:mysql://localhost:3306/entityData
+
+dbuser = 
+
 dbpassword = 
 
 twitter.OAuth.consumer.key = 

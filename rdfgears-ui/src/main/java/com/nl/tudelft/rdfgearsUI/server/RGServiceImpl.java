@@ -41,7 +41,7 @@ public class RGServiceImpl extends RemoteServiceServlet implements RGService {
 	 * 
 	 */
 	private static final long serialVersionUID = -6305136928250756266L;
-	private static final String RDFGEARS_CONF_FILE = "/WEB-INF/rdf-gears-ui.config";
+	private static final String RDFGEARS_CONF_FILE = "../rdfgears/rdfgears.config";
 	
 	// private DataDriver dd = new
 	// DataDriver(getServletContext().getRealPath("/"));

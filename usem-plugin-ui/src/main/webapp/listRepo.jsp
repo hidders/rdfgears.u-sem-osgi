@@ -24,7 +24,7 @@
   #L%
   --%>
 <%@page import="nl.tudelft.wis.usem.plugin.repository.PluginRepositoryFactory"%>
-<%@page import="nl.tudelft.wis.usem.plugin.repository.localrepository.LocalPluginRepository"%>
+<%@page import="nl.tudelft.wis.usem.plugin.repository.localrepository.LocalRepository"%>
 <%
 	out.write(PluginRepositoryFactory.getRepository().listRepositoryContents(null));
 %>

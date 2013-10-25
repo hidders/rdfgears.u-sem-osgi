@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Map;
 import java.util.Properties;
 
@@ -41,7 +42,7 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 
 public class LocalRepository implements PluginRepository {
 
-	public static final String DEFAULT_CONFIG_FILE = "usem-plugin-core.config";
+	public static final String DEFAULT_CONFIG_FILE = "../rdfgears/rdfgears.config";
 	private static String repositoryDir;
 	private static Properties configMap = new Properties();
 	private boolean initDone = false;
@@ -53,11 +54,33 @@ public class LocalRepository implements PluginRepository {
 	private boolean init() {
 		if (!initDone) {
 			try {
-				configMap.load(getStream(DEFAULT_CONFIG_FILE));
-			} catch (Exception e) {
-				System.out.println("Config file " + DEFAULT_CONFIG_FILE
-						+ " not found");
-				return false;
+				configMap.load(new FileInputStream(DEFAULT_CONFIG_FILE));
+
+				// may not work in .jar files, etc
+				String dirName = System.getProperty("user.dir");
+				System.out.println("Loaded usem-plugin-core config file " + dirName + "/"
+						+ DEFAULT_CONFIG_FILE);
+			} catch (Exception e2) {
+				System.err.println("Cannot open configuration file '"
+						+ DEFAULT_CONFIG_FILE + "' for reading in dir "
+						+ System.getProperty("user.dir"));
+
+				try {
+					configMap.load(getStream(DEFAULT_CONFIG_FILE));
+				} catch (Exception e) {
+					URL dir = this.getClass().getClassLoader().getResource(".");
+					if (dir != null) {
+						System.err.println("Cannot open configuration file '"
+								+ DEFAULT_CONFIG_FILE + "' for reading in dir "
+								+ dir.getPath());
+					} else {
+						System.err
+								.println("Cannot open configuration file '"
+										+ DEFAULT_CONFIG_FILE
+										+ "' as there is no ClassLoader directory accessible.");
+					}
+					return false;
+				}
 			}
 		}
 		initDone = true;
@@ -73,7 +96,7 @@ public class LocalRepository implements PluginRepository {
 		}
 
 		repositoryDir = configMap.getProperty("rdfgears.base.path")
-				+ configMap.getProperty("repository.dir");
+				+ configMap.getProperty("repository.path");
 
 		File repoFolder = new File(repositoryDir);
 
@@ -171,7 +194,7 @@ public class LocalRepository implements PluginRepository {
 	public String getWorkflowsDir() {
 		
 		String dirName = configMap.getProperty("rdfgears.base.path")
-				+ configMap.getProperty("workflow.dir");
+				+ configMap.getProperty("workflows.path");
 		
 		File dir = new File(dirName);
 		dir.mkdirs();
@@ -181,7 +204,7 @@ public class LocalRepository implements PluginRepository {
 	public String getPluginDir() {
 
 		String dirName = configMap.getProperty("rdfgears.base.path")
-				+ configMap.getProperty("repository.dir");
+				+ configMap.getProperty("repository.path");
 
 		File destdir = new File(dirName);
 

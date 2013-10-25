@@ -23,7 +23,7 @@
   THE SOFTWARE.
   #L%
   --%>
-<%@page import="nl.tudelft.wis.usem.plugin.repository.localrepository.LocalPluginRepository"%>
+<%@page import="nl.tudelft.wis.usem.plugin.repository.localrepository.LocalRepository"%>
 <%@page
 	import="nl.tudelft.wis.usem.plugin.repository.PluginRepositoryFactory"%>
 <%@page
@@ -58,7 +58,7 @@
 			}
 		}
 
-		if (new LocalPluginRepository().publishlPlugin(
+		if (new LocalRepository().publishlPlugin(
 				inputFolder, pluginName, plugin))
 			out.write("<div class=\"success\">Plug-in successfully published!</div>");
 		else

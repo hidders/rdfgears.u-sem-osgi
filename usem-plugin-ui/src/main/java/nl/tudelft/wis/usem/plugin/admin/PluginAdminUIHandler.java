@@ -43,19 +43,17 @@ public class PluginAdminUIHandler {
 
 	public boolean installPlugin(HttpServletRequest request) {
 		try {
-			String user = null;
-
 			InputStream plugin = null;
 			String pluginName = null;
+			
+			ServletFileUpload sfu = new ServletFileUpload(new DiskFileItemFactory());
 
-			List<FileItem> items = new ServletFileUpload(
-					new DiskFileItemFactory()).parseRequest(request);
+			List<FileItem> items = sfu.parseRequest(request);
 			for (FileItem item : items) {
 				if (item.isFormField()) {
 					String fieldname = item.getFieldName();
 
 					if (fieldname.equals("user")) {
-						user = item.getString();
 					}
 
 				} else {

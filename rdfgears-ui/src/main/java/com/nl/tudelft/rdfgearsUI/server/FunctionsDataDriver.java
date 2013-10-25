@@ -26,7 +26,6 @@ package com.nl.tudelft.rdfgearsUI.server;
  * #L%
  */
 
-
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -58,8 +57,7 @@ public class FunctionsDataDriver {
 	}
 
 	public String getFunctionsDirContent() {
-		File functionsDir = new File(configurationDataDriver.getBasePath()
-				+ "/data/functions");
+		File functionsDir = new File(configurationDataDriver.getFunctionsDir());
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder;
 		Document doc = null;
@@ -154,14 +152,13 @@ public class FunctionsDataDriver {
 	public String getFunctionFile(String fId) {
 		fId = fId.trim();
 
-		File functionsDir = new File(configurationDataDriver.getBasePath()
-				+ "/data/functions");
+		File functionsDir = new File(configurationDataDriver.getFunctionsDir());
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder;
 
 		try {
 			dBuilder = dbFactory.newDocumentBuilder();
-			
+
 			if (functionsDir.isDirectory()) {
 				File operators[] = functionsDir.listFiles();
 				for (File op : operators) {
@@ -197,8 +194,7 @@ public class FunctionsDataDriver {
 		return "<error> Function's definition file cannot be found !!</error>";
 	}
 
-	private boolean isMatchID(String fId, Document d)
-			throws IOException {
+	private boolean isMatchID(String fId, Document d) throws IOException {
 		NodeList params = d.getElementsByTagName("param");
 		for (int i = 0; i < params.getLength(); i++) {
 			Element prm = (Element) params.item(i);

@@ -55,7 +55,7 @@ public class WorkflowsDataDriver {
 	
 	public WorkflowsDataDriver(ConfigurationDataDriver configurationDataDriver) {
 		this.configurationDataDriver = configurationDataDriver;
-		workflowsDir = configurationDataDriver.getBasePath() + "/data/workflows/";
+		workflowsDir = configurationDataDriver.getWorkflowsDir();
 	}
 	
 	 public String getWorkflowFileAsNode(String wfId){
@@ -376,7 +376,7 @@ public class WorkflowsDataDriver {
           return "<success>Workflow file successfully saved</success>";
   }
   public String deleteWorkflowFile(String wfId){
-		File f = new File(workflowsDir + wfId + ".xml");
+		File f = new File(workflowsDir + "/" + wfId + ".xml");
           try{
                   if(f.exists()){
                           f.delete();

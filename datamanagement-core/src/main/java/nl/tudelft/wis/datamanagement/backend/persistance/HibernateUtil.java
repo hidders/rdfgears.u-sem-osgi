@@ -31,7 +31,10 @@ import nl.tudelft.wis.datamanagement.backend.Config;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistry;
+import org.hibernate.service.ServiceRegistryBuilder;
 
 public class HibernateUtil {
 
@@ -54,8 +57,14 @@ public class HibernateUtil {
 			// Create the SessionFactory from hibernate.cfg.xml
 			Configuration configuration = new Configuration();
 			configuration.addDirectory(myConf.getHBMDir());
-			Session openSession = configuration.configure()
-					.buildSessionFactory().openSession();
+			configuration.setProperty("hibernate.connection.url", myConf.getDatabaseURL());
+			configuration.setProperty("hibernate.connection.username", myConf.getDatabaseUser());
+			configuration.setProperty("hibernate.connection.password", myConf.getDatabasePwd());
+			
+			ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(configuration.configure().getProperties()).buildServiceRegistry();        
+			SessionFactory sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+			
+			Session openSession = sessionFactory.openSession();
 
 			return openSession;
 		} catch (Throwable ex) {

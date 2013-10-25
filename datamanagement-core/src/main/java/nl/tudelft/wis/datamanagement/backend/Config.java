@@ -41,7 +41,7 @@ import java.util.Properties;
  */
 public class Config {
 
-	public static final String DEFAULT_CONFIG_FILE = "../datamanagement.config";
+	public static final String DEFAULT_CONFIG_FILE = "../rdfgears/rdfgears.config";
 
 	private static Properties configMap = new Properties();
 
@@ -50,42 +50,39 @@ public class Config {
 	 */
 	public Config() {
 
+		/*
+		 * try loading it from CWD, if it is not the same location as where this
+		 * class is stored. Necessary for the junit test :-(
+		 */
 		try {
-			configMap.load(getStream(DEFAULT_CONFIG_FILE));
-		} catch (Exception e) {
-			URL dir = this.getClass().getClassLoader().getResource(".");
-			if (dir != null) {
-				System.err.println("Cannot open configuration file '"
-						+ DEFAULT_CONFIG_FILE + "' for reading in dir "
-						+ dir.getPath() + ". Trying Current Working Dir.");
-			} else {
-				System.err
-						.println("Cannot open configuration file '"
-								+ DEFAULT_CONFIG_FILE
-								+ "' as there is no ClassLoader directory accessible. Trying Current Working Dir.");
+			configMap.load(new FileInputStream(DEFAULT_CONFIG_FILE));
+
+			// may not work in .jar files, etc
+			String dirName = System.getProperty("user.dir");
+			System.out.println("Loaded datamanagement-core config file " + dirName + "/"
+					+ DEFAULT_CONFIG_FILE);
+		} catch (Exception e2) {
+			System.err.println("Cannot open configuration file '"
+					+ DEFAULT_CONFIG_FILE + "' for reading in dir "
+					+ System.getProperty("user.dir"));
+
+			try {
+				configMap.load(getStream(DEFAULT_CONFIG_FILE));
+			} catch (Exception e) {
+				URL dir = this.getClass().getClassLoader().getResource(".");
+				if (dir != null) {
+					System.err.println("Cannot open configuration file '"
+							+ DEFAULT_CONFIG_FILE + "' for reading in dir "
+							+ dir.getPath());
+				} else {
+					System.err
+							.println("Cannot open configuration file '"
+									+ DEFAULT_CONFIG_FILE
+									+ "' as there is no ClassLoader directory accessible.");
+				}
 			}
 
-			/*
-			 * try loading it from CWD, if it is not the same location as where
-			 * this class is stored. Necessary for the junit test :-(
-			 */
-			try {
-				configMap.load(new FileInputStream(DEFAULT_CONFIG_FILE)); // may
-																			// not
-				// work in
-				// .jar
-				// files,
-				// etc
-				String dirName = System.getProperty("user.dir");
-				System.out.println("Ok, loaded config file " + dirName + "/"
-						+ DEFAULT_CONFIG_FILE);
-			} catch (Exception e2) {
-				System.err.println("Cannot open configuration file '"
-						+ DEFAULT_CONFIG_FILE + "' for reading in dir "
-						+ System.getProperty("user.dir"));
-			}
 		}
-		initConfig();
 
 	}
 
@@ -107,9 +104,6 @@ public class Config {
 		return resourceAsStream;
 	}
 
-	private void initConfig() {
-	}
-
 	public String getDatabaseURL() {
 
 		return configMap.getProperty("database.url");
@@ -129,6 +123,8 @@ public class Config {
 		String dirName = configMap.getProperty("rdfgears.base.path")
 				+ configMap.getProperty("hbm.path");
 
+		dirName = addSlash(dirName);
+
 		File destdir = new File(dirName);
 
 		if (!destdir.exists())
@@ -142,12 +138,24 @@ public class Config {
 		String dirName = configMap.getProperty("rdfgears.base.path")
 				+ configMap.getProperty("data.types.path");
 
+		dirName = addSlash(dirName);
+
 		File destdir = new File(dirName);
 
 		if (!destdir.exists())
 			destdir.mkdir();
 
 		return destdir;
+	}
+
+	private String addSlash(String dirName) {
+
+		if (dirName.lastIndexOf("/") != (dirName.length() - 1)) {
+			dirName = dirName + "/";
+		}
+
+		return dirName;
+
 	}
 
 }
