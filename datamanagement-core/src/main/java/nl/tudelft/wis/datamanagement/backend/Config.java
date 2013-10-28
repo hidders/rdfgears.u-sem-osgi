@@ -106,17 +106,17 @@ public class Config {
 
 	public String getDatabaseURL() {
 
-		return configMap.getProperty("database.url");
+		return configMap.getProperty("entity.database.url");
 	}
 
 	public String getDatabaseUser() {
 
-		return configMap.getProperty("dbuser");
+		return configMap.getProperty("entity.dbuser");
 	}
 
 	public String getDatabasePwd() {
 
-		return configMap.getProperty("dbpassword");
+		return configMap.getProperty("entity.dbpassword");
 	}
 
 	public File getHBMDir() {

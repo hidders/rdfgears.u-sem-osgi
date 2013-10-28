@@ -51,11 +51,11 @@ dbpassword =
 # CREATE DATABASE IF NOT EXISTS `<dbname>` ;
 # GRANT ALL PRIVILEGES ON `<dbname>`.* TO '<dbuser>'@'localhost';
 
-database.url = jdbc:mysql://localhost:3306/entityData
+entity.database.url = jdbc:mysql://localhost:3306/entityData
 
-dbuser = 
+entity.dbuser = 
 
-dbpassword = 
+entity.dbpassword = 
 
 twitter.OAuth.consumer.key = 
 twitter.OAuth.consumer.secret = 
