@@ -10,3 +10,4 @@ re:rdfgears-ui/.gwt-tmp/
 re:rdfgears-plugins/runtimeResources/rdfgears/pluginRepository/
 
 glob:./rdfgears-plugins/runtimeResources/rdfgears/rdfgears.config
+re:^rdfgears$
