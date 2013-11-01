@@ -60,7 +60,7 @@ public class FileManager {
 	 * @return
 	 */
 	public Writer getFileWriter(String fileName){
-		String fullFileName = Engine.getConfig().getPathToWorkFiles() + "/" + fileName;
+		String fullFileName = Engine.getConfig().getPathToWorkFiles() + fileName;
 		BufferedWriter bufferedWriter = writerMap.get(fullFileName);
 		
 		if (bufferedWriter==null){

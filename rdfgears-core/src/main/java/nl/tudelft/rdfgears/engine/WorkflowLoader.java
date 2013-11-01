@@ -482,7 +482,7 @@ public class WorkflowLoader {
 	 */
 	public void loadWorkflowXMLDocument() throws WorkflowLoadingException {
 		String path = Engine.getConfig().getWorkflowPath();
-		String filePath = path + "/" + workflowId + ".xml";
+		String filePath = path + workflowId + ".xml";
 		try {
 
 			FileReader fileReader = new FileReader(filePath);

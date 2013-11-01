@@ -104,11 +104,11 @@ public class USemSentimentAnalysis {
 		Set<SentiWord> lexicon = new HashSet<SentiWord>();
 		Set<String> positiveWords = new HashSet<String>(
 				Arrays.asList(getContents(
-						new File(Config.getLexiconPath() + "/lexicon-twitter-positive"))
+						new File(Config.getLexiconPath() + "lexicon-twitter-positive"))
 						.split(",")));
 		Set<String> negativeWords = new HashSet<String>(
 				Arrays.asList(getContents(
-						new File(Config.getLexiconPath() + "/lexicon-twitter-negative"))
+						new File(Config.getLexiconPath() + "lexicon-twitter-negative"))
 						.split(",")));
 		for (String word : positiveWords) {
 			lexicon.add(new SentiWord(word.trim().toLowerCase(), 1.0, 0.0));

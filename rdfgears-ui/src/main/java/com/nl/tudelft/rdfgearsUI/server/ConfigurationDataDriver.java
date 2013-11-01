@@ -34,7 +34,6 @@ import java.util.Properties;
 
 public class ConfigurationDataDriver {
 	private String basePath = ".";
-	private File dataDir;
 	Properties rdfgearsProp = new Properties();
 
 	public ConfigurationDataDriver(ServletContext sc, String configFile) {
@@ -96,9 +95,6 @@ public class ConfigurationDataDriver {
 		return r;
 	}
 	
-	public File getDataDir() {
-		return dataDir;
-	}
 	
 	public String getProcessorsDir(){
 		

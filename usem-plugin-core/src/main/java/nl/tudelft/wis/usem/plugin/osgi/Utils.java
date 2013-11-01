@@ -45,15 +45,18 @@ import org.osgi.framework.launch.FrameworkFactory;
 
 public class Utils {
 	
-	public static Framework startFramework(Map<String, String> additionalConfig) throws BundleException {
+	static private LocalRepository myLocalRepository = new LocalRepository();
+	
+	public static Framework startFramework() throws BundleException {
 		FrameworkFactory frameworkFactory = ServiceLoader
 				.load(FrameworkFactory.class).iterator().next();
 		Map<String, String> config = new HashMap<String, String>();
-		config.put(Constants.FRAMEWORK_STORAGE, new LocalRepository().getPluginDir());
 		
-		if(additionalConfig != null)
-			config.putAll(additionalConfig);
-
+		config.put(Constants.FRAMEWORK_STORAGE, myLocalRepository.getPluginDir());
+		
+		config.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, myLocalRepository.getOSGiPackages());
+				
+		
 		Framework framework = frameworkFactory.newFramework(config);
 		framework.start();
 		return framework;

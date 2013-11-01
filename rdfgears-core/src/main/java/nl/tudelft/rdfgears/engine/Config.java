@@ -276,65 +276,60 @@ public class Config {
 
 	public static String getLexiconPath() {
 
-		return configMap.getProperty("rdfgears.base.path")
-				+ configMap.getProperty("lexicon.path");
+		return addSlash(configMap.getProperty("rdfgears.base.path")
+				+ configMap.getProperty("lexicon.path"));
 	}
 
 	public static String getLanguageProfilePath() {
 
-		return configMap.getProperty("rdfgears.base.path")
-				+ configMap.getProperty("language.profile.path");
+		return addSlash(configMap.getProperty("rdfgears.base.path")
+				+ configMap.getProperty("language.profile.path"));
 	}
 
 	public static String getBasePath() {
 
-		return configMap.getProperty("rdfgears.base.path");
+		return addSlash(configMap.getProperty("rdfgears.base.path"));
 	}
 
 	public static String getFlickrDataPath() {
 
-		return configMap.getProperty("rdfgears.base.path")
-				+ configMap.getProperty("flickr.data.path");
+		return addSlash(configMap.getProperty("rdfgears.base.path")
+				+ configMap.getProperty("flickr.data.path"));
 	}
 
 	public static String getHofstedePath() {
 
-		return configMap.getProperty("rdfgears.base.path")
-				+ configMap.getProperty("hofstede.file.path");
+		return addSlash(configMap.getProperty("rdfgears.base.path")
+				+ configMap.getProperty("hofstede.file.path"));
 	}
 
 	public static String getRegionPath() {
 
-		return configMap.getProperty("rdfgears.base.path")
-				+ configMap.getProperty("region.file.path");
+		return addSlash(configMap.getProperty("rdfgears.base.path")
+				+ configMap.getProperty("region.file.path"));
 	}
 
-	public static String getTwitter4jPath() {
-
-		return configMap.getProperty("rdfgears.base.path")
-				+ configMap.getProperty("twitter4j.file.path");
-	}
-
+	
 	public static String getStoragePath() {
 
-		return configMap.getProperty("rdfgears.base.path")
-				+ configMap.getProperty("value.storage.path");
+		return addSlash(configMap.getProperty("rdfgears.base.path")
+				+ configMap.getProperty("value.storage.path"));
 	}
 
 	public static String getTwitterPath() {
 
-		return configMap.getProperty("rdfgears.base.path")
-				+ configMap.getProperty("twitter.data.path");
+		return addSlash(configMap.getProperty("rdfgears.base.path")
+				+ configMap.getProperty("twitter.data.path"));
 	}
 
 	public static String getWorkflowPath() {
-		return configMap.getProperty("rdfgears.base.path") + workflowPath;
+		return addSlash(configMap.getProperty("rdfgears.base.path") + workflowPath);
 	}
 
 	public String getPathToWorkFiles() {
-		return configMap.getProperty("rdfgears.base.path")
+		return addSlash(configMap.getProperty("rdfgears.base.path")
 				+ configMap.getProperty("work.files.path",
-						DEFAULT_WORKFILES_PATH);
+						DEFAULT_WORKFILES_PATH));
 	}
 
 	public static String getOAuthConsumerKey() {
@@ -355,6 +350,16 @@ public class Config {
 	public static String getOAuthAccessTokenSecret() {
 
 		return configMap.getProperty("twitter.OAuth.access.secret");
+	}
+	
+	private static String addSlash(String dirName) {
+
+		if (dirName.lastIndexOf("/") != (dirName.length() - 1)) {
+			dirName = dirName + "/";
+		}
+
+		return dirName;
+
 	}
 
 }

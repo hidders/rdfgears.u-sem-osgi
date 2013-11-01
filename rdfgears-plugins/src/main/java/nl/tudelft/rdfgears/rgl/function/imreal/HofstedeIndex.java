@@ -48,7 +48,7 @@ public class HofstedeIndex extends SimplyTypedRGLFunction {
 	public static final String INPUT_COUNTRY = "country";
 	public static final String INPUT_DIMENSION = "dimension";
 
-	private static final String HOFSTEDE_FILE = Config.getHofstedePath() +"/hofstede_index";
+	private static final String HOFSTEDE_FILE = Config.getHofstedePath() +"hofstede_index";
 	
 	private static final String PDI = "pdi";
 	private static final String IDV = "idv";

@@ -47,7 +47,7 @@ public class OSGIPluginAdmin implements PluginAdmin{
 	public OSGIPluginAdmin(){
 		try {
 			System.out.println("OSGI plugin framework started!");
-			framework = Utils.startFramework(null);
+			framework = Utils.startFramework();
 		} catch (BundleException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

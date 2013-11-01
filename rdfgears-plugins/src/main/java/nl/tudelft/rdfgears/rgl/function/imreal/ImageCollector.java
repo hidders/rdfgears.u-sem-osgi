@@ -75,7 +75,7 @@ public class ImageCollector
 			if(!flickrDataFolder.exists())
 				flickrDataFolder.mkdirs();
 			
-			File f = new File(FLICKR_DATA_FOLDER+"/"+nsid);
+			File f = new File(FLICKR_DATA_FOLDER + nsid);
 			int hours = -1;
 			if(f.exists()==true)
 			{
@@ -195,7 +195,7 @@ public class ImageCollector
 		try
 		{	
 			int lineNum=0;
-			BufferedWriter bw = new BufferedWriter(new FileWriter(FLICKR_DATA_FOLDER+"/"+nsid));
+			BufferedWriter bw = new BufferedWriter(new FileWriter(FLICKR_DATA_FOLDER + nsid));
 			bw.write("<photos>");
 			bw.newLine();
 			
@@ -257,7 +257,7 @@ public class ImageCollector
 		
 		try
 		{
-			Document d = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new FileInputStream(FLICKR_DATA_FOLDER+"/"+nsid));
+			Document d = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new FileInputStream(FLICKR_DATA_FOLDER + nsid));
 			NodeList photos = d.getElementsByTagName("photo");
 			
 			for(int i=0; i<photos.getLength(); i++)

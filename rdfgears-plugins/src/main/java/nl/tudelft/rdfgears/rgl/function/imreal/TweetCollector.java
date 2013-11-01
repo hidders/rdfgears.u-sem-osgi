@@ -100,7 +100,7 @@ public class TweetCollector
 			if (!twitterDataFolder.exists())
 				twitterDataFolder.mkdirs();
 
-			File f = new File(TWITTER_DATA_FOLDER + "/" + twitterUsername);
+			File f = new File(TWITTER_DATA_FOLDER + twitterUsername);
 			int hours = -1;
 			if (f.exists() == true) {
 				long lastModified = f.lastModified();
@@ -186,7 +186,7 @@ public class TweetCollector
 			if (!twitterDataFolder.exists())
 				twitterDataFolder.mkdirs();
 
-			File f = new File(TWITTER_DATA_FOLDER + "/FRIENDS_OF_"
+			File f = new File(TWITTER_DATA_FOLDER + "FRIENDS_OF_"
 					+ twitterUsername);
 			int hours = -1;
 			

@@ -57,11 +57,8 @@ public class OSGIPluginAccessManager implements PluginAccessManager {
 	}
 
 	private void createFramework() throws BundleException {
-		Map<String, String> config = new HashMap<String, String>();
-		config.put(
-				Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA,
-				"nl.tudelft.rdfgears.engine,nl.tudelft.rdfgears.rgl.datamodel.type,nl.tudelft.rdfgears.rgl.datamodel.value,nl.tudelft.rdfgears.rgl.function,nl.tudelft.rdfgears.util.row,nl.tudelft.rdfgears.plugin");
-		framework = Utils.startFramework(config);
+		
+		framework = Utils.startFramework();
 
 		BundleContext context = framework.getBundleContext();
 
@@ -81,7 +78,7 @@ public class OSGIPluginAccessManager implements PluginAccessManager {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		}
 
 		List<E> result = new ArrayList<E>();

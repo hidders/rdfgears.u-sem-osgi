@@ -47,10 +47,10 @@ public class LocalRepository implements PluginRepository {
 	private static Properties configMap = new Properties();
 	private boolean initDone = false;
 
-	public LocalRepository(){
+	public LocalRepository() {
 		init();
 	}
-	
+
 	private boolean init() {
 		if (!initDone) {
 			try {
@@ -58,8 +58,8 @@ public class LocalRepository implements PluginRepository {
 
 				// may not work in .jar files, etc
 				String dirName = System.getProperty("user.dir");
-				System.out.println("Loaded usem-plugin-core config file " + dirName + "/"
-						+ DEFAULT_CONFIG_FILE);
+				System.out.println("Loaded usem-plugin-core config file "
+						+ dirName + "/" + DEFAULT_CONFIG_FILE);
 			} catch (Exception e2) {
 				System.err.println("Cannot open configuration file '"
 						+ DEFAULT_CONFIG_FILE + "' for reading in dir "
@@ -95,8 +95,8 @@ public class LocalRepository implements PluginRepository {
 			return null;
 		}
 
-		repositoryDir = configMap.getProperty("rdfgears.base.path")
-				+ configMap.getProperty("repository.path");
+		repositoryDir = addSlash(configMap.getProperty("rdfgears.base.path")
+				+ configMap.getProperty("repository.path"));
 
 		File repoFolder = new File(repositoryDir);
 
@@ -173,8 +173,7 @@ public class LocalRepository implements PluginRepository {
 			InputStream plugin) {
 
 		try {
-			File publishFolder = new File(repositoryDir + File.separator
-					+ folder.trim());
+			File publishFolder = new File(repositoryDir +  folder.trim());
 
 			if (!publishFolder.exists()) {
 				publishFolder.mkdirs();
@@ -190,12 +189,12 @@ public class LocalRepository implements PluginRepository {
 
 		return true;
 	}
-	
+
 	public String getWorkflowsDir() {
-		
-		String dirName = configMap.getProperty("rdfgears.base.path")
-				+ configMap.getProperty("workflows.path");
-		
+
+		String dirName = addSlash(configMap.getProperty("rdfgears.base.path")
+				+ configMap.getProperty("workflows.path"));
+
 		File dir = new File(dirName);
 		dir.mkdirs();
 		return dirName;
@@ -203,8 +202,8 @@ public class LocalRepository implements PluginRepository {
 
 	public String getPluginDir() {
 
-		String dirName = configMap.getProperty("rdfgears.base.path")
-				+ configMap.getProperty("repository.path");
+		String dirName = addSlash(configMap.getProperty("rdfgears.base.path")
+				+ configMap.getProperty("repository.path"));
 
 		File destdir = new File(dirName);
 
@@ -212,5 +211,21 @@ public class LocalRepository implements PluginRepository {
 			destdir.mkdirs();
 
 		return destdir.getAbsolutePath();
+	}
+
+	public String getOSGiPackages() {
+
+		String packages = configMap.getProperty("osgi.packages");
+		return packages;
+	}
+	
+	private String addSlash(String dirName) {
+
+		if (dirName.lastIndexOf(File.separator) != (dirName.length() - 1)) {
+			dirName = dirName + File.separator;
+		}
+
+		return dirName;
+
 	}
 }
