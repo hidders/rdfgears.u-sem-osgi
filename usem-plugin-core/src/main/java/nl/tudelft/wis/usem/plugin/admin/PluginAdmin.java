@@ -41,4 +41,8 @@ public interface PluginAdmin {
 	
 	public boolean deletePlugin(String id);
 
+	public <E> List<E> getServices(Class<E> type);
+	
+	public void refresh();
+
 }

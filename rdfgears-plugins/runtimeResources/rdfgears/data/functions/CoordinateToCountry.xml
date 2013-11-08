@@ -1,8 +1,6 @@
 <processor label="Coordinates to Country" category="Custom Java">
 <description>
-This is a custom java function that accept coordinate as 
-try new line here with desc 
-input and retun country name as output
+This is a custom java function that accepts coordinates as input and returns country name as output
 </description>
 <inputs>
 <function type="custom-java"> 

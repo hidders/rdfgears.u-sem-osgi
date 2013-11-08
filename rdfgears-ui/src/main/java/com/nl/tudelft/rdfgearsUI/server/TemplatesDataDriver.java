@@ -41,7 +41,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import nl.tudelft.rdfgears.plugin.WorkflowTemplate;
-import nl.tudelft.wis.usem.plugin.access_management.PluginAccessManagerFactory;
+import nl.tudelft.wis.usem.plugin.admin.PluginAdminFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -161,8 +161,8 @@ public class TemplatesDataDriver {
 		try {
 			dBuilder = dbFactory.newDocumentBuilder();
 
-			for (WorkflowTemplate template : PluginAccessManagerFactory
-					.getPluginManager().getServices(WorkflowTemplate.class)) {
+			for (WorkflowTemplate template : PluginAdminFactory
+					.getPluginAdmin().getServices(WorkflowTemplate.class)) {
 				Document d = dBuilder.parse(template.asInputStream());
 				d.getDocumentElement().normalize();
 
@@ -203,8 +203,8 @@ public class TemplatesDataDriver {
 			doc = dBuilder.newDocument();
 			root = doc.createElement("workflows");
 			doc.appendChild(root);
-			for (WorkflowTemplate template : PluginAccessManagerFactory
-					.getPluginManager().getServices(WorkflowTemplate.class)) {
+			for (WorkflowTemplate template : PluginAdminFactory
+					.getPluginAdmin().getServices(WorkflowTemplate.class)) {
 				Document d = dBuilder.parse(template.asInputStream());
 				d.getDocumentElement().normalize();
 				Element wf = (Element) d.getElementsByTagName("rdfgears").item(

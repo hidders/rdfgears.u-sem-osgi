@@ -69,7 +69,7 @@ import nl.tudelft.rdfgears.rgl.workflow.Workflow;
 import nl.tudelft.rdfgears.rgl.workflow.WorkflowNode;
 import nl.tudelft.rdfgears.util.ValueParser;
 import nl.tudelft.rdfgears.util.XMLUtil;
-import nl.tudelft.wis.usem.plugin.access_management.PluginAccessManagerFactory;
+import nl.tudelft.wis.usem.plugin.admin.PluginAdminFactory;
 
 import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
@@ -92,7 +92,7 @@ public class WorkflowLoader {
 		}
 		
 		//Make sure any plugin changes are applied 
-		PluginAccessManagerFactory.getPluginManager().refresh();
+		PluginAdminFactory.refresh(true);
 		
 		WorkflowLoader wLoader = new WorkflowLoader(workflowId);
 		return wLoader.getWorkflow();
@@ -587,7 +587,7 @@ public class WorkflowLoader {
 	}
 
 	private static Class<?> loadFunctionFromPlugins(String className) {
-		List<FunctionDescriptor> services = PluginAccessManagerFactory.getPluginManager()
+		List<FunctionDescriptor> services = PluginAdminFactory.getPluginAdmin()
 				.getServices(FunctionDescriptor.class);
 
 		for (FunctionDescriptor fd : services) {

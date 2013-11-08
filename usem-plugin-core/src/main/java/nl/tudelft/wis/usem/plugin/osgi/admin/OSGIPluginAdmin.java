@@ -29,6 +29,7 @@ package nl.tudelft.wis.usem.plugin.osgi.admin;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import nl.tudelft.wis.usem.plugin.admin.PluginAdmin;
@@ -39,6 +40,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
+import org.osgi.util.tracker.ServiceTracker;
 
 public class OSGIPluginAdmin implements PluginAdmin{
 	
@@ -46,12 +48,13 @@ public class OSGIPluginAdmin implements PluginAdmin{
 
 	public OSGIPluginAdmin(){
 		try {
-			System.out.println("OSGI plugin framework started!");
 			framework = Utils.startFramework();
 		} catch (BundleException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		System.out.println("OSGI plugin framework started!");
+		
 	}
 
 	@Override
@@ -94,4 +97,41 @@ public class OSGIPluginAdmin implements PluginAdmin{
 		framework.update();
 	}
 	
+	@Override
+	public <E> List<E> getServices(Class<E> type) {
+		Object[] services;
+		try {
+			ServiceTracker tracker = new ServiceTracker(
+					framework.getBundleContext(), type, null);
+			tracker.open();
+			services = tracker.getServices();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Collections.emptyList();
+		}
+
+		List<E> result = new ArrayList<E>();
+
+		if (services != null) {
+			for (Object obj : services) {
+				result.add((E) obj);
+			}
+		}
+
+		return result;
+	}
+	
+	@Override
+	public void refresh() {
+		try {
+			framework.stop();
+			framework.waitForStop(0);
+			framework.start();
+			//framework = Utils.startFramework();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
 }

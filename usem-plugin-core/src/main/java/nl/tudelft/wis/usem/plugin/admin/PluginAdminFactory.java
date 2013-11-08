@@ -26,12 +26,30 @@ package nl.tudelft.wis.usem.plugin.admin;
  * #L%
  */
 
-
 import nl.tudelft.wis.usem.plugin.osgi.admin.OSGIPluginAdmin;
+import nl.tudelft.wis.usem.plugin.admin.PluginAdmin;
 
 public class PluginAdminFactory {
-	public static PluginAdmin getPluginManager(){
-		return new OSGIPluginAdmin();
+
+	private static PluginAdmin pluginManager;
+
+	public static PluginAdmin getPluginAdmin() {
+		if (pluginManager == null) {
+			System.out.println("Creating pluginManager");
+			pluginManager = new OSGIPluginAdmin();
+		}
+		return pluginManager;
 	}
-	
+
+	public static void refresh(boolean force) {
+		if ((pluginManager == null) || (force == true)) {
+			pluginManager = new OSGIPluginAdmin();
+			System.out.println("Refreshed by new PluginAdmin");
+		} else {
+			pluginManager.refresh();
+			System.out.println("Refreshed by PluginAdmin.refresh");
+		}
+
+	}
+
 }

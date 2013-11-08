@@ -41,7 +41,7 @@ import nl.tudelft.rdfgears.rgl.exception.CircularWorkflowException;
 import nl.tudelft.rdfgears.rgl.exception.WorkflowLoadingException;
 import nl.tudelft.rdfgears.rgl.workflow.Workflow;
 import nl.tudelft.rdfgears.rgl.workflow.WorkflowNode;
-import nl.tudelft.wis.usem.plugin.access_management.PluginAccessManagerFactory;
+import nl.tudelft.wis.usem.plugin.admin.PluginAdminFactory;
 
 import org.w3c.dom.NodeList;
 
@@ -56,7 +56,7 @@ public class WorkflowLoaderSE extends WorkflowLoader {
 	}
 
 	// Make sure any plugin changes are applied
-	PluginAccessManagerFactory.getPluginManager().refresh();
+	PluginAdminFactory.refresh(true);
 
 	WorkflowLoaderSE wLoader = new WorkflowLoaderSE(workflowId);
 	return wLoader.getWorkflow();

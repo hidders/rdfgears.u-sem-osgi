@@ -34,7 +34,7 @@ public class SessionUtils {
 	public static PluginAdmin getPluginAdminFromSession(HttpSession session){
 		PluginAdmin pluginAdmin = (PluginAdmin) session.getAttribute("pluginAdmin");
 		if(pluginAdmin == null){
-			pluginAdmin = PluginAdminFactory.getPluginManager();
+			pluginAdmin = PluginAdminFactory.getPluginAdmin();
 			session.setAttribute("pluginAdmin", pluginAdmin);
 		}
 		return pluginAdmin;

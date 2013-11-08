@@ -42,7 +42,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import nl.tudelft.rdfgears.plugin.FunctionDescriptor;
-import nl.tudelft.wis.usem.plugin.access_management.PluginAccessManagerFactory;
+import nl.tudelft.wis.usem.plugin.admin.PluginAdminFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -84,8 +84,8 @@ public class FunctionsDataDriver {
 				}
 			}
 
-			List<FunctionDescriptor> services = PluginAccessManagerFactory
-					.getPluginManager().getServices(FunctionDescriptor.class);
+			List<FunctionDescriptor> services = PluginAdminFactory
+					.getPluginAdmin().getServices(FunctionDescriptor.class);
 
 			for (FunctionDescriptor descriptor : services) {
 				Document d = dBuilder.parse(descriptor.asInputStream());
@@ -176,8 +176,8 @@ public class FunctionsDataDriver {
 
 			}
 
-			List<FunctionDescriptor> services = PluginAccessManagerFactory
-					.getPluginManager().getServices(FunctionDescriptor.class);
+			List<FunctionDescriptor> services = PluginAdminFactory
+					.getPluginAdmin().getServices(FunctionDescriptor.class);
 
 			for (FunctionDescriptor descriptor : services) {
 				Document d = dBuilder.parse(descriptor.asInputStream());

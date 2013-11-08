@@ -39,6 +39,8 @@ import java.util.ServiceLoader;
 import nl.tudelft.wis.usem.plugin.repository.localrepository.LocalRepository;
 
 import org.eclipse.osgi.framework.internal.core.Constants;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
@@ -56,9 +58,16 @@ public class Utils {
 		
 		config.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, myLocalRepository.getOSGiPackages());
 				
-		
 		Framework framework = frameworkFactory.newFramework(config);
 		framework.start();
+		
+		BundleContext context = framework.getBundleContext();
+
+		for (Bundle bundle : context.getBundles()) {
+			bundle.start();
+		}
+		
+		System.out.println("Framework created and bundles started");
 		return framework;
 	}
 

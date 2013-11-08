@@ -30,7 +30,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-import nl.tudelft.wis.usem.plugin.access_management.PluginAccessManagerFactory;
+import nl.tudelft.wis.usem.plugin.admin.PluginAdminFactory;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.nl.tudelft.rdfgearsUI.client.RGService;
@@ -98,9 +98,10 @@ public class RGServiceImpl extends RemoteServiceServlet implements RGService {
 
 	public String initNewSession() {
 		// Make sure any plugin changes are applied
-		PluginAccessManagerFactory.getPluginManager().refresh();
+		PluginAdminFactory.refresh(true);
+		
 
-		System.out.println("AccessManager refreshed!");
+		System.out.println("PluginAdmin refreshed!");
 
 		return "Success";
 	}
